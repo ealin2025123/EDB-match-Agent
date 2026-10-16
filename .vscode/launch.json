@@ -1,0 +1,31 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run local example (uses configured DeepSeek)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "excel_match_agent",
+      "cwd": "${workspaceFolder}",
+      "args": [
+        "run",
+        "--job",
+        "examples/job.local.json"
+      ],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Check configuration (no model request)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "excel_match_agent",
+      "cwd": "${workspaceFolder}",
+      "args": [
+        "doctor",
+        "--job",
+        "examples/job.local.json"
+      ],
+      "console": "integratedTerminal"
+    }
+  ]
+}

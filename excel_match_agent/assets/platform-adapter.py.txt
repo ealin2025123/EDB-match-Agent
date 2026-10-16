@@ -1,0 +1,175 @@
+_platform_parser_main = main
+
+_PLATFORM_XLSX_MAGIC = b"PK"
+_PLATFORM_XLS_MAGIC = bytes.fromhex("D0CF11E0A1B11AE1")
+_PLATFORM_CSV_ENCODINGS = ("utf-8-sig", "gbk", "utf-8", "gb2312")
+
+import io
+import csv
+import re
+import urllib.request
+import urllib.parse
+
+def _platform_download(file_md5):
+    url = "https://files.example.invalid/api/file/download/" + file_md5
+    class NoRedirect(urllib.request.HTTPRedirectHandler):
+        def redirect_request(self, req, fp, code, msg, headers, newurl):
+            return None
+    opener = urllib.request.build_opener(NoRedirect, urllib.request.ProxyHandler({}))
+    req = urllib.request.Request(url, method="GET")
+    try:
+        resp = opener.open(req, timeout=30)
+    except Exception:
+        return None, None, None
+    try:
+        if resp.getcode() != 200:
+            return None, None, None
+        max_size = 50 * 1024 * 1024
+        chunks = []
+        total = 0
+        while True:
+            chunk = resp.read(65536)
+            if not chunk:
+                break
+            total += len(chunk)
+            if total > max_size:
+                return None, None, None
+            chunks.append(chunk)
+        data = b"".join(chunks)
+        content_type = resp.headers.get("Content-Type", "")
+        if "text/html" in content_type.lower():
+            return None, None, None
+        if data[:100].lower().lstrip().startswith(b'<!doctype html') or data[:100].lower().lstrip().startswith(b'<html'):
+            return None, None, None
+        cd = resp.headers.get("Content-Disposition", "")
+        return data, cd, resp.headers
+    finally:
+        try:
+            resp.close()
+        except Exception:
+            pass
+
+def _platform_filename(cd):
+    if not cd:
+        return ""
+    match = re.search(r"filename\*=(?:UTF-8'')?([^;]+)", cd, re.I)
+    if match:
+        value = match.group(1).strip().strip('"')
+        try:
+            value = urllib.parse.unquote(value)
+        except Exception:
+            pass
+        return value
+    match = re.search(r'filename="?([^";]+)"?', cd, re.I)
+    if match:
+        value = match.group(1).strip().strip('"')
+        try:
+            value = urllib.parse.unquote(value)
+        except Exception:
+            pass
+        try:
+            value = value.encode('latin1').decode('utf-8')
+        except Exception:
+            pass
+        return value
+    return ""
+
+def _platform_read(data, filename):
+    try:
+        if data.startswith(_PLATFORM_XLSX_MAGIC):
+            import openpyxl
+            wb = openpyxl.load_workbook(io.BytesIO(data), data_only=True)
+            try:
+                sheets = []
+                for ws in wb.worksheets:
+                    rows = []
+                    for row in ws.iter_rows(values_only=True):
+                        rows.append(list(row))
+                    sheets.append({"name": ws.title, "rows": rows, "merged_ranges": [str(r) for r in ws.merged_cells.ranges], "number_formats": {cell.coordinate:cell.number_format for row in ws for cell in row if cell.value is not None and cell.number_format != "General"}})
+                return {"sheets": sheets}
+            finally:
+                wb.close()
+        if data.startswith(_PLATFORM_XLS_MAGIC):
+            import xlrd
+            book = xlrd.open_workbook(file_contents=data)
+            sheets = []
+            for sheet in book.sheets():
+                rows = []
+                for r in range(sheet.nrows):
+                    row = []
+                    for c in range(sheet.ncols):
+                        row.append(sheet.cell_value(r, c))
+                    rows.append(row)
+                sheets.append({"name": sheet.name, "rows": rows, "merged_ranges": [], "number_formats": {}})
+            book.release_resources()
+            return {"sheets": sheets}
+        lower = filename.lower() if filename else ""
+        if lower.endswith(".csv"):
+            for enc in _PLATFORM_CSV_ENCODINGS:
+                try:
+                    text = data.decode(enc)
+                    break
+                except UnicodeDecodeError:
+                    continue
+            else:
+                return None
+            reader = csv.reader(io.StringIO(text))
+            rows = [row for row in reader]
+            return {"sheets": [{"name": "Sheet1", "rows": rows, "merged_ranges": [], "number_formats": {}}]}
+    except Exception:
+        return None
+    return None
+
+def main(params):
+    if not isinstance(params, dict):
+        return {"code": -1, "msg": "参数格式错误", "ExcelData": []}
+    workbook = params.get("workbook")
+    if workbook is not None and not isinstance(workbook, dict):
+        return {"code": -1, "msg": "参数格式错误", "ExcelData": []}
+    if not workbook:
+        workbook = {}
+    sheets = workbook.get("sheets") or []
+    if sheets:
+        return _platform_parser_main(params)
+    file_md5 = params.get("fileMd5")
+    file_md5_lower = params.get("filemd5")
+    if file_md5 is not None and file_md5_lower is not None and file_md5 != file_md5_lower:
+        return {"code": -1, "msg": "fileMd5与filemd5不一致", "ExcelData": []}
+    if file_md5 is None:
+        file_md5 = file_md5_lower
+    if not file_md5 or not isinstance(file_md5, str):
+        return {"code": -1, "msg": "缺少fileMd5", "ExcelData": []}
+    if not re.fullmatch(r'[A-Za-z0-9_-]{1,128}', file_md5):
+        return {"code": -1, "msg": "fileMd5格式不合法", "ExcelData": []}
+    data, cd, headers = _platform_download(file_md5)
+    if data is None:
+        return {"code": -1, "msg": "下载失败或文件无效", "ExcelData": []}
+    real_name = _platform_filename(cd)
+    if real_name:
+        real_name = re.split(r'[\\/]', real_name)[-1]
+        if re.fullmatch(r'[0-9a-fA-F]{32}(\.[^.]+)?', real_name):
+            real_name = ""
+    if not real_name:
+        real_name = params.get("source_name") or params.get("fileName") or params.get("filename") or ""
+    new_params = dict(params)
+    new_params["workbook"] = _platform_read(data, real_name)
+    if new_params["workbook"] is None:
+        return {"code": -1, "msg": "不支持的文件格式", "ExcelData": []}
+    if real_name:
+        new_params["source_name"] = real_name
+    result = _platform_parser_main(new_params)
+    if result.get("code") != 0:
+        return result
+    if not result.get("ExcelData"):
+        return {"code": -1, "msg": "解析后无有效数据", "ExcelData": []}
+    return result
+
+# 平台异常返回包装，由DeepSeek API生成。
+_platform_entry_unchecked = main
+
+
+def main(params):
+    try:
+        return _platform_entry_unchecked(params)
+    except Exception as exc:
+        return {"code": -99, "msg": "平台解析失败:" + str(exc), "ExcelData": []}

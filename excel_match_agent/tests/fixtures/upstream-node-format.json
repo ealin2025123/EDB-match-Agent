@@ -1,0 +1,100 @@
+[
+  {
+    "rule_indicator_name": "合成测试指标01",
+    "rule_unit_ratio": "",
+    "rule_indicator_code": 9000000001,
+    "rule_constant_name": "万元",
+    "indicator_release_frequency": "月"
+  },
+  {
+    "rule_indicator_name": "合成测试指标02",
+    "rule_unit_ratio": "",
+    "rule_indicator_code": 9000000002,
+    "rule_constant_name": "%",
+    "indicator_release_frequency": "月"
+  },
+  {
+    "rule_indicator_name": "合成测试指标03",
+    "rule_unit_ratio": "",
+    "rule_indicator_code": 9000000003,
+    "rule_constant_name": "万元",
+    "indicator_release_frequency": "月"
+  },
+  {
+    "rule_indicator_name": "合成测试指标04",
+    "rule_unit_ratio": "",
+    "rule_indicator_code": 9000000004,
+    "rule_constant_name": "%",
+    "indicator_release_frequency": "月"
+  },
+  {
+    "rule_indicator_name": "合成测试指标05",
+    "rule_unit_ratio": "",
+    "rule_indicator_code": 9000000005,
+    "rule_constant_name": "万元",
+    "indicator_release_frequency": "月"
+  },
+  {
+    "rule_indicator_name": "合成测试指标06",
+    "rule_unit_ratio": "",
+    "rule_indicator_code": 9000000006,
+    "rule_constant_name": "%",
+    "indicator_release_frequency": "月"
+  },
+  {
+    "rule_indicator_name": "合成测试指标07",
+    "rule_unit_ratio": "",
+    "rule_indicator_code": 9000000007,
+    "rule_constant_name": "万元",
+    "indicator_release_frequency": "季"
+  },
+  {
+    "rule_indicator_name": "合成测试指标08",
+    "rule_unit_ratio": "",
+    "rule_indicator_code": 9000000008,
+    "rule_constant_name": "%",
+    "indicator_release_frequency": "月"
+  },
+  {
+    "rule_indicator_name": "合成测试指标09",
+    "rule_unit_ratio": "",
+    "rule_indicator_code": 9000000009,
+    "rule_constant_name": "万元",
+    "indicator_release_frequency": "月"
+  },
+  {
+    "rule_indicator_name": "合成测试指标10",
+    "rule_unit_ratio": "",
+    "rule_indicator_code": 9000000010,
+    "rule_constant_name": "%",
+    "indicator_release_frequency": "月"
+  },
+  {
+    "rule_indicator_name": "合成测试指标11",
+    "rule_unit_ratio": "",
+    "rule_indicator_code": 9000000011,
+    "rule_constant_name": "万元",
+    "indicator_release_frequency": "月"
+  },
+  {
+    "rule_indicator_name": "合成测试指标12",
+    "rule_unit_ratio": "",
+    "rule_indicator_code": 9000000012,
+    "rule_constant_name": "%",
+    "indicator_release_frequency": "月"
+  },
+  {
+    "rule_indicator_name": "合成测试指标13",
+    "rule_unit_ratio": "",
+    "rule_indicator_code": 9000000013,
+    "rule_constant_name": "万元",
+    "indicator_release_frequency": "月"
+  },
+  {
+    "rule_indicator_name": "合成测试指标14",
+    "rule_unit_ratio": "",
+    "rule_indicator_code": 9000000014,
+    "rule_constant_name": "%",
+    "indicator_release_frequency": "月"
+  }
+]

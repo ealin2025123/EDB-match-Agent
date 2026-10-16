@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "excel-match-agent"
+version = "0.1.0"
+description = "DeepSeek-driven Excel parsing, semantic name review and workflow matching agent"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["openpyxl>=3.1,<4"]
+
+[project.optional-dependencies]
+xls = ["xlrd>=2,<3"]
+dev = ["build>=1", "PyYAML>=6,<7"]
+
+[project.scripts]
+excel-match-agent = "excel_match_agent.app:main"
+
+[tool.setuptools.packages.find]
+include = ["excel_match_agent*"]
+exclude = ["excel_match_agent.tests*"]
+
+[tool.setuptools.package-data]
+excel_match_agent = ["assets/*.txt", "assets/*.json"]
