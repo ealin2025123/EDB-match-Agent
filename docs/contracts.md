@@ -44,6 +44,22 @@ indicator_data 是整数时保留 JSON 数字，是小数时输出字符串，�
 
 ## 失败与恢复
 
+### HTML 与 Prompt 分支
+
+通过 parse_strategy 显式选择 html 或 prompt。开始节点参数可通过 start_file 读取平台导出 TXT/JSON；输入含 markdownMD5、title、publictime。按下载地址追加 `/markdownMD5` 获取正文，拒绝 Excel/PDF 二进制、原始 HTML 错误页、空正文和 JSON 错误体。不回退到 fileMd5。
+
+HTML 内部 main(params) 接收 Markdown、title、publictime，返回 code/msg/ExcelData。每条严格为四个字符串字段：indicator_name、indicator_data、indicator_unit、end_date。交付平台入口自行按 markdownMD5 下载正文，再调用相同核心。最终 JSON 根字段与 Excel 相同；规范整数字面量输出 JSON 整数，小数及有精度格式的字符串保留。
+
+PromptCode 为完整 system prompt，结合 Markdown、title、GZK.GZKJG 和 publictime 执行。模型提取只返回 out_data，记录严格为五个字符串字段：indicator_code、indicator_name、indicator_data、indicator_unit、end_date。名称与编码必须来自同一 GZK 记录。
+
+Prompt 最终匹配输出只有 OUTDATA；每条依次为 indicator_code、indicator_name、indicator_data、indicator_unit、KB_unit、convert_ratio、unit_ratio、indicator_release_frequency、publictime、end_date、remark、PLPL，全部字符串。不输出 unitArray 或 SJPLLB。
+
+Excel gzk_file 新增兼容平台导出 TXT；HTML/Prompt 保持原有规则库查询转输出读取逻辑，不宣称支持所有平台任意文本。不会执行导出文本中的 scriptCode。
+
+独立审核逐条引用源文并检查全部 GZK/正则名称：同一指标真实遗漏为 missing；明确不同口径或源文不存在为 not_in_source，不因此阻止其他指标；确实无法判断才 uncertain。至少两个不同编码且审核无真实错误即可通过，无匹配率门槛。
+
+HTML/Prompt 正式失败状态为 needs_review，需查看 failure_kind、notifications 及 human-review.json；不沿用下述 Excel 外层错误包装判断 HTML/Prompt 状态。
+
 失败输出包含 status=error、error_code、requires_human_review、attempts、rebuilds、max_rebuilds、human_review_file 和通知。成功节点 JSON 不使用 empty 占位记录替代。
 
 名称问题或不足两个不同匹配编码才触发业务重建，最多两次。认证、连接、响应截断、审核协议和平台导出故障均报告其具体阶段，不自动重开业务生成预算。

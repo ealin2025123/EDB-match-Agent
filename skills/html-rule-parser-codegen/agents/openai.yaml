@@ -1,0 +1,8 @@
+interface:
+  display_name: "HTML 指标解析"
+  short_description: "从 HTML 规则与正则库生成并验证指标解析器"
+  brand_color: "#0F766E"
+  default_prompt: "请使用 $html-rule-parser-codegen 根据 HTML 规则表、名称正则库和网页/Markdown 证据生成并验证解析器。"
+
+policy:
+  allow_implicit_invocation: true

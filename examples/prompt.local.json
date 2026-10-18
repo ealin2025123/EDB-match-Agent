@@ -1,0 +1,26 @@
+{
+  "parse_strategy": "prompt",
+  "start_file": "data/start.json",
+  "markdown_path": "data/sample.md",
+  "gzk_file": "data/gzk-output.txt",
+  "rule": {
+    "规则表行": 2,
+    "数据来源编码": "000001",
+    "采集数据源": "合成演示",
+    "数据源路径代码": "123",
+    "路径": "合成演示\\统计信息",
+    "指标名称示例": "示例指标甲累计",
+    "指标名称取值逻辑": "指标列+叶子表头，累计值规范为累计、同比规范为同比(±%)",
+    "目标表": "demo",
+    "目标模块": "演示"
+  },
+  "skill_path": "../skills/statistical-markdown-prompt-codegen/SKILL.md",
+  "output_dir": "../runs",
+  "max_attempts": 3,
+  "total_timeout": null,
+  "model_timeout": 900,
+  "deepseek": {
+    "stream": true,
+    "max_tokens": 65536
+  }
+}

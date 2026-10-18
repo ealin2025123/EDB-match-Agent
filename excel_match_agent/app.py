@@ -400,6 +400,11 @@ def run_job(job, job_base, backend=None, executor=None, docker=None, output_root
 def _run_job(job, job_base, backend=None, executor=None, docker=None, output_root=None, execution_backend=None,
              _run_dir=None, _started=None, _deadline=None):
     """由程序自主循环；backend/executor注入仅用于离线测试。"""
+    from .markdown_agent import strategy_for, run_markdown_job
+    if strategy_for(job) in {"html", "prompt"}:
+        return run_markdown_job(job, job_base, backend=backend, executor=executor, output_root=output_root,
+                                execution_backend=execution_backend, _run_dir=_run_dir,
+                                _started=_started, _deadline=_deadline)
     from .supervisor import time_budget
     started = time.monotonic() if _started is None else _started
     budget = time_budget(job)
@@ -454,7 +459,8 @@ def _run_job(job, job_base, backend=None, executor=None, docker=None, output_roo
         return result
 
     try:
-        raw_rules = load(resolve(job["gzk_file"])) if job.get("gzk_file") else job.get("GZKJG")
+        from .excel_gzk_input import load_excel_gzk_file
+        raw_rules = load_excel_gzk_file(resolve(job["gzk_file"])) if job.get("gzk_file") else job.get("GZKJG")
         rules = normalize_rules(raw_rules)
         preflight = evaluate([], rules)
         if preflight["failure_kind"] in {"GZKJG_EMPTY", "GZKJG_INVALID", "RULE_AMBIGUITY"}:
@@ -757,9 +763,14 @@ def main():
     path = args.job.resolve()
     result = run_job(load(path), path.parent, docker=args.docker, execution_backend=args.executor)
     if result["status"] == "candidate_pass" and not args.diagnostics:
-        displayed = {key: result[key] for key in ("unitArray", "codeOutputResult", "OUTDATA")}
+        displayed = {key: result[key] for key in result.get("output_keys", ("unitArray", "codeOutputResult", "OUTDATA"))}
     elif args.diagnostics:
         displayed = result
+    elif result["status"] == "markdown_verified_pending_webpage":
+        displayed = {key: result.get(key) for key in (
+            "status", "production_ready", "verification_level", "markdown_regression_passed",
+            "regression_output_file", "matched_indicator_count", "attempts", "rebuilds",
+            "elapsed_seconds", "notifications")}
     else:
         displayed = {"status": "error", "error_code": result["failure_kind"],
                      "requires_human_review": True, "attempts": result.get("attempts", 0),

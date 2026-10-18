@@ -1,0 +1,1 @@
+codeOutputResult：{"GZKJG": [{"rule_indicator_code": "DEMO001", "rule_indicator_name": "示例指标甲累计", "rule_constant_name": "万元", "rule_unit_ratio": "", "indicator_release_frequency": "月"}, {"rule_indicator_code": "DEMO002", "rule_indicator_name": "示例指标乙同比(±%)", "rule_constant_name": "%", "rule_unit_ratio": "", "indicator_release_frequency": "月"}]}

@@ -1,4 +1,4 @@
 interface:
   display_name: "Excel Rule Codegen"
-  short_description: "Generate Excel parsing cores and validated workflow-ready Python files."
-  default_prompt: "Read the supplied rules and actual workbook, generate the parsing core, and validate the complete platform entrypoint."
+  short_description: "根据规则Excel和原始Excel生成生产可用的拆解Python代码"
+  default_prompt: "请读取规则Excel和原始Excel，严格按规则生成正式环境可运行的Python拆解代码。"

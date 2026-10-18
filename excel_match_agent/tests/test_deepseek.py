@@ -306,15 +306,15 @@ class DeepSeekTests(unittest.TestCase):
         self.assertEqual(backend.api_key_env, "DEEPSEEK_API_KEY")
 
     def test_gateway_profile_does_not_send_the_official_key(self):
-        env = {'DEEPSEEK_BASE_URL': 'https://llm.example.invalid/v1', 'DEEPSEEK_MODEL': 'your-deepseek-model',
-               'DEEPSEEK_API_KEY_ENV': 'CUSTOM_LLM_API_TOKEN', 'DEEPSEEK_API_KEY': 'official-test-key', 'CUSTOM_LLM_API_TOKEN': ''}
+        env = {'DEEPSEEK_BASE_URL': 'https://gateway.example.invalid/v1', 'DEEPSEEK_MODEL': 'bl-deepseek-v4.1-flash',
+               'DEEPSEEK_API_KEY_ENV': 'GILDATA_API_TOKEN', 'DEEPSEEK_API_KEY': 'official-test-key', 'GILDATA_API_TOKEN': ''}
         with patch('excel_match_agent.deepseek.load_environment'), patch.dict(os.environ, env):
             backend = DeepSeekBackend.from_job({})
-            self.assertEqual(backend.url, 'https://llm.example.invalid/v1/chat/completions')
-            self.assertEqual(backend.api_key_env, 'CUSTOM_LLM_API_TOKEN')
-            with self.assertRaisesRegex(BackendUnavailable, 'CUSTOM_LLM_API_TOKEN'):
+            self.assertEqual(backend.url, 'https://gateway.example.invalid/v1/chat/completions')
+            self.assertEqual(backend.api_key_env, 'GILDATA_API_TOKEN')
+            with self.assertRaisesRegex(BackendUnavailable, 'GILDATA_API_TOKEN'):
                 backend.headers()
-            os.environ['CUSTOM_LLM_API_TOKEN'] = 'internal-test-token'
+            os.environ['GILDATA_API_TOKEN'] = 'internal-test-token'
             self.assertEqual(backend.headers()['Authorization'], 'Bearer internal-test-token')
 
     def test_probe_reports_unavailable_without_changing_model(self):

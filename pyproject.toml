@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "excel-match-agent"
-version = "0.1.0"
-description = "DeepSeek-driven Excel parsing, semantic name review and workflow matching agent"
+version = "0.2.0"
+description = "DeepSeek-driven Excel, HTML and Markdown prompt parsing with semantic review and workflow matching"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = ["openpyxl>=3.1,<4"]

@@ -1,0 +1,27 @@
+{
+  "execution_backend": "local_python",
+  "deepseek": {
+    "stream": true,
+    "max_tokens": 65536
+  },
+  "source_path": null,
+  "gzk_file": "data/gzk.json",
+  "skill_path": "../skills/excel-rule-codegen/SKILL.md",
+  "excelrule_path": "data/excelrule.xlsx",
+  "name_reference_path": "data/name-rules.xlsx",
+  "pageTitle": "演示来源\\统计信息",
+  "fileMd5": "REPLACE_WITH_SOURCE_FILE_ID",
+  "output_dir": "../runs",
+  "max_attempts": 3,
+  "model_timeout": 900,
+  "total_timeout": null,
+  "export_platform_parser": true,
+  "download_base_url": "https://files.example.invalid/api/file/download",
+  "platform_verify_download": true,
+  "platform_test_timeout": 65,
+  "upstream_metadata": {
+    "title": "REPLACE_WITH_ACTUAL_SOURCE_TITLE",
+    "publictime": ""
+  },
+  "parse_strategy": "excel"
+}

@@ -1,0 +1,233 @@
+_core_main = main
+import json
+import re
+import urllib.error
+import urllib.parse
+import urllib.request
+
+_DOWNLOAD_BASE_URL = "https://files.example.invalid/api/file/download"
+_MAX_BYTES = 8 * 1024 * 1024
+_TIMEOUT = 60
+_MD5_PATTERN = re.compile(r"^[A-Za-z0-9_-]{1,128}$")
+_MD5_KEYS = ("markdownMD5", "markdownMd5", "markdown_md5", "parseMarkdownMD5", "parseMarkdownMd5")
+_TEXT_ENCODINGS = ("utf-8-sig", "utf-8", "gb18030", "gbk")
+_BINARY_CONTENT_TYPES = (
+    "application/pdf",
+    "application/vnd.ms-excel",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "application/x-msdownload",
+)
+
+
+class _AdapterError(Exception):
+    pass
+
+
+class _NoRedirectHandler(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
+def _safe_reason(exc):
+    try:
+        text = str(exc)
+    except Exception:
+        text = ""
+    text = text.replace("\r", " ").replace("\n", " ").strip()
+    if len(text) > 200:
+        text = text[:200]
+    if not text:
+        text = exc.__class__.__name__
+    return text
+
+
+def _fail(msg):
+    return {"code": 1, "msg": msg, "ExcelData": []}
+
+
+def _coerce_params(params):
+    if isinstance(params, dict):
+        return dict(params)
+    if isinstance(params, str):
+        text = params.strip()
+        if not text:
+            raise _AdapterError("参数解析失败：params 为空字符串")
+        try:
+            loaded = json.loads(text)
+        except Exception:
+            raise _AdapterError("参数解析失败：params 不是合法 JSON")
+        if not isinstance(loaded, dict):
+            raise _AdapterError("参数解析失败：params 必须是 JSON 对象")
+        return dict(loaded)
+    raise _AdapterError("参数解析失败：params 必须是 dict 或 JSON 对象字符串")
+
+
+def _extract_markdown_md5(params_dict):
+    found = []
+    for key in _MD5_KEYS:
+        if key in params_dict:
+            raw = params_dict[key]
+            if raw is None:
+                continue
+            value = raw.strip() if isinstance(raw, str) else str(raw).strip()
+            if value:
+                found.append((key, value))
+    if not found:
+        raise _AdapterError("缺少 markdownMD5 参数：无法定位需要下载的 Markdown 正文")
+    values = set(value for _, value in found)
+    if len(values) > 1:
+        names = "、".join(key for key, _ in found)
+        raise _AdapterError("markdownMD5 参数冲突：%s 取值不一致" % names)
+    value = found[0][1]
+    if not _MD5_PATTERN.match(value):
+        raise _AdapterError("markdownMD5 取值非法：仅允许 1-128 位字母、数字、下划线或连字符")
+    return value
+
+
+def _read_limited(response):
+    data = response.read(_MAX_BYTES + 1)
+    if data is None:
+        data = b""
+    if len(data) > _MAX_BYTES:
+        raise _AdapterError("下载正文超过 8MB 上限，已拒绝")
+    return data
+
+
+def _decode_text(data):
+    for encoding in _TEXT_ENCODINGS:
+        try:
+            return data.decode(encoding)
+        except UnicodeDecodeError:
+            continue
+    raise _AdapterError("下载正文解码失败：utf-8-sig/utf-8/gb18030/gbk 均无法解码")
+
+
+def _looks_like_binary(data):
+    head = data[:8]
+    if head.startswith(b"%PDF"):
+        return True
+    if head.startswith(b"PK\x03\x04") or head.startswith(b"PK\x05\x06") or head.startswith(b"PK\x07\x08"):
+        return True
+    if head.startswith(b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1"):
+        return True
+    return False
+
+
+def _validate_body_text(text):
+    stripped = text.lstrip("\ufeff \t\r\n")
+    if not stripped.strip():
+        raise _AdapterError("下载正文为空，无法继续解析")
+    lowered = stripped[:64].lower()
+    if lowered.startswith("<!doctype html") or lowered.startswith("<html"):
+        raise _AdapterError("下载正文为 HTML 页面（疑似网页或错误页），已拒绝")
+    if stripped.startswith("{"):
+        try:
+            parsed = json.loads(stripped)
+        except Exception:
+            parsed = None
+        if isinstance(parsed, dict):
+            raise _AdapterError("下载正文为 JSON 对象（疑似错误响应体），已拒绝")
+
+
+def _fetch_text(markdown_md5):
+    url = _DOWNLOAD_BASE_URL.rstrip('/') + '/' + urllib.parse.quote(markdown_md5, safe='')
+    opener = urllib.request.build_opener(
+        urllib.request.ProxyHandler({}),
+        _NoRedirectHandler,
+    )
+    request = urllib.request.Request(
+        url,
+        headers={"Accept": "*/*", "User-Agent": "platform-adapter/1.0"},
+    )
+    response = None
+    content_type = ""
+    try:
+        try:
+            response = opener.open(request, timeout=_TIMEOUT)
+        except urllib.error.HTTPError as exc:
+            status = getattr(exc, "code", None)
+            try:
+                exc.close()
+            except Exception:
+                pass
+            try:
+                is_redirect = status is not None and 300 <= int(status) < 400
+            except Exception:
+                is_redirect = False
+            if is_redirect:
+                raise _AdapterError("下载正文时收到重定向（HTTP %s），已拒绝" % status)
+            raise _AdapterError("下载正文失败：HTTP 状态码 %s" % status)
+        except urllib.error.URLError as exc:
+            raise _AdapterError("下载正文失败：无法访问下载服务（%s）" % _safe_reason(exc))
+        except _AdapterError:
+            raise
+        except Exception as exc:
+            raise _AdapterError("下载正文失败：%s" % _safe_reason(exc))
+
+        status = getattr(response, "status", None)
+        if status is None:
+            status = getattr(response, "code", None)
+        if status is None:
+            try:
+                status = response.getcode()
+            except Exception:
+                status = None
+        if status != 200:
+            raise _AdapterError("下载正文失败：HTTP 状态码 %s" % status)
+
+        try:
+            content_type = (response.headers.get("Content-Type") or "").strip().lower()
+        except Exception:
+            content_type = ""
+
+        data = _read_limited(response)
+    finally:
+        if response is not None:
+            try:
+                response.close()
+            except Exception:
+                pass
+
+    if not data:
+        raise _AdapterError("下载正文为空，无法继续解析")
+    if _looks_like_binary(data):
+        raise _AdapterError("下载内容疑似 Excel/PDF 等二进制文件，已拒绝")
+    for marker in _BINARY_CONTENT_TYPES:
+        if content_type.startswith(marker):
+            raise _AdapterError("下载内容类型为 %s（疑似 Excel/PDF 等文件），已拒绝" % content_type)
+
+    text = _decode_text(data)
+    _validate_body_text(text)
+    return text
+
+
+def _platform_main(params):
+    try:
+        params_dict = _coerce_params(params)
+    except _AdapterError as exc:
+        return _fail("参数错误：%s" % str(exc))
+    except Exception as exc:
+        return _fail("参数错误：%s" % _safe_reason(exc))
+
+    try:
+        markdown_md5 = _extract_markdown_md5(params_dict)
+        markdown_text = _fetch_text(markdown_md5)
+    except _AdapterError as exc:
+        return _fail(str(exc))
+    except Exception as exc:
+        return _fail("下载正文失败：%s" % _safe_reason(exc))
+
+    payload = dict(params_dict)
+    payload["Markdown"] = markdown_text
+
+    try:
+        result = _core_main(payload)
+    except Exception as exc:
+        return _fail("业务核心执行异常：%s" % _safe_reason(exc))
+
+    if isinstance(result, dict):
+        return result
+    return _fail("业务核心返回结构异常：期望 dict，实际为 %s" % type(result).__name__)
+
+
+main = _platform_main

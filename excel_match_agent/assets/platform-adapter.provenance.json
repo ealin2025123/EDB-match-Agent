@@ -2,10 +2,9 @@
   "provider": "deepseek",
   "model": "deepseek-v4.1-flash",
   "sha256": "2ad8b4987941b258f4c561a578b53ae19491f02151732a4876c9390ad4af5d17",
-  "description": "DeepSeek-generated generic download/reader adapter verified against source records.",
   "distribution_changes": [
-    "Private download endpoint replaced with a configurable placeholder.",
-    "Removed trailing blank lines; no parsing logic changed."
+    "Private endpoint replaced with configurable example.invalid placeholder; parsing logic unchanged.",
+    "Normalized trailing blank lines."
   ],
   "contains_source_specific_parsing_rules": false
 }

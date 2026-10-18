@@ -1,0 +1,22 @@
+{
+  "parse_strategy": "prompt",
+  "start_file": "../private/start.txt",
+  "gzk_file": "../private/gzk-output.txt",
+  "rule_source": "workbook",
+  "excelrule_path": "../private/excelrule.xlsx",
+  "rule_sheet": "Sheet1",
+  "rule_row": 2,
+  "regex_path": "../private/regex.xlsx",
+  "legacy_regex_path": "../private/legacy-regex.xlsx",
+  "skill_path": "../skills/statistical-markdown-prompt-codegen/SKILL.md",
+  "output_dir": "../runs",
+  "download_base_url": "https://files.example.invalid/api/file/download",
+  "max_attempts": 3,
+  "total_timeout": null,
+  "model_timeout": 900,
+  "download_timeout": 45,
+  "deepseek": {
+    "stream": true,
+    "max_tokens": 65536
+  }
+}
