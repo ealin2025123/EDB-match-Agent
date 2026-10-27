@@ -1,4 +1,4 @@
-# Excel Match Agent
+# EDB Match Agent
 
 使用你自己的 **DeepSeek / OpenAI 兼容 API**，从源内容及 Skill 生成解析资产，执行、精确匹配 GZK、独立审核，并输出与原工作流兼容的 JSON。支持 **Excel、HTML、Prompt** 三种分支，默认纯 Python，可在 VS Code 终端独立运行。
 
