@@ -13,7 +13,7 @@ class CodeLibraryTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
-        self.root = Path(self.temp.name)
+        self.root = Path(self.temp.name).resolve()
         (self.root/'SKILL.md').write_text('按本次源表',encoding='utf-8')
         (self.root/'source.csv').write_text('name,value,unit,date\nGDP,0,亿元,2026-06-30\nGDP2,1,亿元,2026-06-30\n',encoding='utf-8')
         self.cache = self.root/'service-runtime/code-cache'

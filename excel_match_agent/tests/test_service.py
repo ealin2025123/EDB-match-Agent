@@ -71,7 +71,7 @@ def passed_result(folder, strategy='excel'):
 class ServiceTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
-        self.root = Path(self.temp.name)
+        self.root = Path(self.temp.name).resolve()
         self.profile = self.root/'job.json'
         self.profile.write_text(json_text({'source_path':'old.xlsx','markdown_path':'old.md',
             'start_file':'old.txt','gzk_file':'old.json','pagetitle':'old','filemd5':'old',
@@ -213,6 +213,15 @@ class ServiceTests(unittest.TestCase):
         asset.write_bytes(original)
         Path(result['output_dir'],'node-output.json').write_text('{"OUTDATA":[]}',encoding='utf-8')
         with self.assertRaises(ValueError):approved_delivery(result)
+
+    def test_prompt_asset_path_alias_keeps_hash_validation(self):
+        result = passed_result(self.root,'prompt')
+        asset = Path(result['verified_asset'])
+        result['history'][0]['asset'] = str(asset.parent/'alias'/ '..'/asset.name)
+        self.assertEqual(approved_delivery(result)['status'],'ready')
+        result['history'][0]['asset_sha256'] = '0'*64
+        with self.assertRaisesRegex(ValueError,'提示词与审核资产不一致'):
+            approved_delivery(result)
 
     def test_legacy_excel_status_requires_real_audit_and_platform_proof(self):
         result=passed_result(self.root)

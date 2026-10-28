@@ -263,7 +263,8 @@ def approved_delivery(result):
         if hashlib.sha256(raw).hexdigest() != report.get('platform_code_sha256'):
             raise ValueError('交付代码与平台验证时的哈希不一致')
     else:
-        approved = [h.get('asset_sha256') for h in result.get('history',[]) if h.get('asset') == str(asset)]
+        approved = [h.get('asset_sha256') for h in result.get('history',[])
+                    if h.get('asset') and Path(h['asset']).resolve() == asset]
         if not approved or hashlib.sha256(code.replace('\r\n','\n').encode()).hexdigest() != approved[-1]:
             raise ValueError('提示词与审核资产不一致')
     delivery = {'status':'ready','parse_strategy':strategy,'result':output,

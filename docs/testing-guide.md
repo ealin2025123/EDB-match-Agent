@@ -4,7 +4,7 @@ HTTP/DC 集成步骤见 [服务接入指南](http-service.md)。本页后文的�
 
 ## 离线发布验证
 
-0.3.0 发布副本在 Windows 本机通过 **324 项自动化测试**，包括合成源文件、假模型、本机 HTTP、三分支交付及代码传输丢失回放。不调用真实模型，不代表全部 DC 场景实测通过。GitHub Actions 在 Windows/Linux 运行测试及隐私扫描，状态以实际运行结果为准。
+0.3.0 发布副本在 Windows 本机通过 **325 项自动化测试**，包括合成源文件、假模型、本机 HTTP、三分支交付、代码传输丢失及路径别名回放。不调用真实模型，不代表全部 DC 场景实测通过。GitHub Actions 在 Windows/Linux 运行测试及隐私扫描，状态以实际运行结果为准。
 
 ```powershell
 python -X utf8 -m unittest discover -s excel_match_agent/tests -t . -q
