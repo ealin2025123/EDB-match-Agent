@@ -1,5 +1,17 @@
 # 输入输出约定
 
+## HTTP / DC 交付契约（0.3.0）
+
+下文的 node-output.json 是 CLI 业务结果。HTTP 服务在此基础上为 Excel/HTML 追加 `result.excel_data`，读取最终审核轮次原始四字段明细；Prompt 保持 `OUTDATA`。
+
+服务按真实 fileType 选择分支，POST /v1/match/jobs 返回 job_id，GET 同一路径查询；queued/running 不能进入接出。HTTP 的 ready 对应内部正式通过，failed/interrupted 保留具体错误、阶段及处理建议。
+
+HTTP 交付的 result._asset_transfer 是 Base64 传输备份，包含任务、分支与 SHA256，统一接出节点校验并移除它。不要把该字段当成业务结果入库。ExcelData 是解析器返回字段，excel_data 是 HTTP/DC 原始明细字段，不能混用大小写。
+
+Prompt 资产为 PromptCode/PromptFile，Excel/HTML 为 PythonCode/PythonFile。统一接出后 OUTDATA 映射 out_data；Prompt 接原 MD 单位清洗链时设 platform_chain="md_array"，它可追加 unitArray。table_audit 只用于 Excel/HTML。
+
+完整说明见 [HTTP 与 DC 接入](http-service.md)、[缓存与质量门禁](cache-and-quality.md)。
+
 ## GZKJG
 
 ```json

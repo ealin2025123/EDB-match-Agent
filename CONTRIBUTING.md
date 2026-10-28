@@ -1,5 +1,7 @@
 # 开发说明
 
+HTTP 调度在 service.py/service_worker.py，缓存逻辑在 code_cache.py，内容预审在 source_preflight.py，结果门禁在 output_checks.py。改动 DC 契约需同步 workflow_nodes 脚本及三分支集成测试，保留 SHA256 校验和传输备份。
+
 安装：`python -m pip install -e ".[xls,dev]"`。
 
 测试：`python -X utf8 -m unittest discover -s excel_match_agent/tests -q`。

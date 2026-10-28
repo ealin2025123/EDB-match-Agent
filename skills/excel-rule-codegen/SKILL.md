@@ -74,6 +74,8 @@ Before writing or modifying parser code, read:
 
 ## Important recent lessons
 
+- For parsing timeouts or large historical tables, read the performance section in `references/production-rules.md`: benchmark the complete entry point, stream source rows, precompute column names, and exclude repeated metadata columns without truncating valid history.
+
 - Keep bracket content such as `(%)`, `(万元)`, `(万平方米)` in `indicator_name` unless the rule explicitly says to delete it.
 - If the rule workbook contains global normalization, apply it everywhere relevant: remove enumeration punctuation as specified, remove English comma and single quote, and remove line breaks.
 - Generated comments must come from `excelrule.xlsx` fields and global rules. Avoid hand-written long Chinese strings that can become mojibake under Windows shell encoding.

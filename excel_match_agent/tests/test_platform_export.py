@@ -10,19 +10,6 @@ from excel_match_agent.tests.test_runtime import CODE, FixedBackend, TestExecuto
 
 
 class PlatformExportTests(unittest.TestCase):
-    def test_export_uses_configured_source_service_without_changing_core(self):
-        endpoint = 'https://source.example.invalid/custom/download'
-        def runner(path, params, folder, label, timeout):
-            text = path.read_text(encoding='utf-8')
-            self.assertIn(endpoint + '/', text)
-            self.assertTrue(text.startswith(self.code.read_text(encoding='utf-8')))
-            return {'code': 0, 'ExcelData': self.rows}
-        result = export_platform_parser(self.code, self.rows, self.params, self.folder,
-            {'download_base_url': endpoint}, runner=runner)
-        report = json.loads(Path(result['platform_validation_path']).read_text(encoding='utf-8'))
-        self.assertTrue(report['real_download_tested'])
-        self.assertNotEqual(report['adapter_template_sha256'], report['adapter_sha256'])
-
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.folder = Path(self.temp.name)

@@ -4,6 +4,17 @@ For the current Excel Agent, [platform-runtime.md](platform-runtime.md) defines 
 
 ## Runtime contract
 
+### Large Tables and Parsing Timeouts
+
+- Identify the timed-out node first: download, table parsing, output serialization/transport, and matching have different bottlenecks. Record local timings separately; a successful local parse does not prove the remote 120-second limit is resolved.
+- Inspect actual worksheet dimensions, XML size, valid data ranges, and repeated horizontal table headers. In e-Stat CPI tables, repeated `含類総連番`/`Serial number` cells can label repeated date columns rather than indicators. Validate the actual identifier grammar before selecting columns; do not treat every nonblank header as an indicator.
+- Precompute normalized/canonical column names and units once per header, and dates once per observation row. For large XLSX files, prefer a source-supported streaming reader or ZIP/XML row iteration rather than repeated cell lookups or whole-workbook materialization. Free parsed row elements promptly. Gzip-wrapped files must be decompressed and dispatched by their actual inner magic bytes.
+- Never fix timeouts by silently retaining only recent periods, dropping unmatched series, rounding values, or hardcoding the sample's last row. Keep all valid historical observations within the authorized scope. Exclude metadata fields and document their removal separately from real observations.
+- Validate against an independent reader or the prior verified core: compare every valid name/value/unit/date tuple, counts, zero values, missing markers, first/last dates, and duplicate identities. If only metadata was removed, reconcile its count explicitly. Test the final `main(params)` with platform-style `fileMd5`; disclose when downloading/transport was mocked rather than measured live.
+- Month-only headers must not let an unrelated external title override an already established source year. CSVs requiring a sheet prefix must derive it from source metadata or explicit validated input, not from arbitrary external titles; reject unresolved multi-table identity instead of inventing a sheet name.
+- Some exports declare worksheet dimensions as `A1` while containing hundreds of real rows. Inspect worksheet XML or reset read-only dimensions before iterating; do not mistake bad metadata for an empty sheet. Normalize regex text and target text consistently for width, while preserving regex operators; verify every expected named capture against the actual source.
+- When source units or as-of dates are genuinely absent, expose explicit runtime inputs or skip the unconfirmed fields with a warning after user confirmation. Unknown currency/multiplier is not a dimensionless unit. Do not convert ratio indices such as 114.4 to growth rates such as 14.4 without authorization. Where identical names would mix monthly, quarterly, annual or cumulative observations, confirm frequency scope or restore source-supported period/group context before emitting conflicting values.
+
 Generate a single `.py` file with:
 
 ```python

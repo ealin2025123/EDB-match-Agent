@@ -9,3 +9,8 @@ include examples/data/sample.csv examples/data/gzk.json examples/data/excelrule.
 recursive-include .github *.yml *.md
 recursive-include .vscode *.json
 global-exclude __pycache__ *.pyc *.log
+
+recursive-include excel_match_agent/workflow_nodes *.py
+recursive-include excel_match_agent/code README.md .gitkeep
+prune excel_match_agent/service-runtime
+prune private

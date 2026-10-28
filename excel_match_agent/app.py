@@ -23,6 +23,7 @@ from .source_download import download_source, SourceDownloadError, DEFAULT_DOWNL
 from .platform_export import export_platform_parser, PlatformExportError
 from .rule_derivation import POLICY as RULE_DERIVATION_POLICY, SCHEMA as DERIVED_RULES_SCHEMA
 from .name_reference import attach_name_reference, comparison_rules
+from .output_checks import check_extraction, OutputCheckError, DATE_REPAIR
 
 MAX_CONTEXT_BYTES = 1200000
 MAX_OUTPUT_BYTES = 8000000
@@ -198,36 +199,8 @@ def skill_context(path):
 def business_context(job, resolve):
     context = []
     if job.get("excelrule_path"):
-        path = resolve(job["excelrule_path"])
-        from openpyxl import load_workbook
-        book = load_workbook(path, read_only=True, data_only=True)
-        try:
-            ws = book[job["rule_sheet"]] if job.get("rule_sheet") else book.worksheets[0]
-            headers = next(ws.values)
-            selected = []
-            for i, row in enumerate(ws.values, 1):
-                if i == 1:
-                    continue
-                data = {str(h): value for h, value in zip(headers, row) if h is not None}
-                if job.get("rule_row"):
-                    take = i == int(job["rule_row"])
-                elif job.get("pageTitle"):
-                    take = str(data.get("路径", "")) == job["pageTitle"]
-                else:
-                    source_name = job.get("source_name") or (resolve(job["source_path"]).name if job.get("source_path") else "")
-                    if not source_name:
-                        raise ValueError("请提供pagetitle、rule_row或source_name以定位唯一excelrule行")
-                    take = str(data.get("文件名称", "")) == source_name
-                if take:
-                    selected.append({"row": i, "fields": {
-                        "指标名称示例": data.get("指标名称示例"),
-                        "指标名称取值逻辑": data.get("指标名称取值逻辑", data.get("指标取值逻辑"))},
-                        "routing": {"路径": data.get("路径"), "数据源路径代码": data.get("数据源路径代码")}})
-            if len(selected) != 1:
-                raise ValueError(f"规则行应唯一，实际找到{len(selected)}行；请指定rule_row或pageTitle")
-            context.append({"path": str(path), "sheet": ws.title, "rules": selected})
-        finally:
-            book.close()
+        from .excel_rule_input import excel_rule_context
+        context.append(excel_rule_context(job, resolve, ROOT))
     for item in job.get("context_files", []):
         path = resolve(item["path"])
         if path.suffix.lower() == ".xlsx":
@@ -426,6 +399,7 @@ def _run_job(job, job_base, backend=None, executor=None, docker=None, output_roo
         return available
 
     def timed(stage, callback):
+        result['stage'] = stage
         remaining()
         began = time.monotonic()
         try:
@@ -445,6 +419,8 @@ def _run_job(job, job_base, backend=None, executor=None, docker=None, output_roo
             for name in ("node-output.json", "node-output.txt"):
                 (run_dir / name).unlink(missing_ok=True)
         result["failure_kind"] = kind
+        if kind:
+            result.setdefault('failure_stage', result.get('stage', 'input_validation'))
         if message:
             notifications.append({"code": kind, "message": message, "severity": "error"})
         if kind:
@@ -461,16 +437,23 @@ def _run_job(job, job_base, backend=None, executor=None, docker=None, output_roo
     try:
         from .excel_gzk_input import load_excel_gzk_file
         raw_rules = load_excel_gzk_file(resolve(job["gzk_file"])) if job.get("gzk_file") else job.get("GZKJG")
-        rules = normalize_rules(raw_rules)
+        try:
+            rules = normalize_rules(raw_rules)
+        except (ValueError, TypeError, KeyError, AttributeError):
+            return finish('GZKJG_INVALID', '指标规则为空或无效：GZKJG结构或字段非法。')
+        if any(not isinstance(r.get('rule_indicator_name'), str) or not r['rule_indicator_name'].strip()
+               or not r.get('rule_indicator_code') for r in rules):
+            return finish('GZKJG_INVALID', '指标规则为空或无效：规则须包含有效指标名称和编码。')
         preflight = evaluate([], rules)
-        if preflight["failure_kind"] in {"GZKJG_EMPTY", "GZKJG_INVALID", "RULE_AMBIGUITY"}:
-            return finish(preflight["failure_kind"], preflight["notifications"][0]["message"])
+        if preflight["failure_kind"] in {"GZKJG_EMPTY", "GZKJG_INVALID", "RULE_AMBIGUITY", "RULE_FIELDS_INVALID"}:
+            return finish(preflight["failure_kind"], '指标规则为空或无效：' + preflight["notifications"][0]["message"])
         attempts = job.get("max_attempts", 3)
         if not isinstance(attempts, int) or not 1 <= attempts <= 3:
             raise ValueError("max_attempts须为1..3")
         result["decision_basis"] = "deepseek_name_correctness"
         result["minimum_matched_indicators"] = 2
         skill = resolve(job["skill_path"])
+        result['stage'] = 'rule_lookup'
         business = business_context(job, resolve)
         reference_rules = comparison_rules(business, rules)
         name_rules = review_rules(reference_rules, rules)
@@ -496,21 +479,34 @@ def _run_job(job, job_base, backend=None, executor=None, docker=None, output_roo
         source_hash = hashlib.sha256(source.read_bytes()).hexdigest()
         result["source_identity"] = {"supplied_filemd5": job.get("fileMd5", ""), "sha256": source_hash,
                                      "identity_note": "filemd5作为上游标识原样保留，不等同于已验证的内容MD5"}
+        result['stage'] = 'source_read'
         data = workbook(source)
         title = job.get("pageTitle", "")
         if not title and business and business[0].get("rules"):
             title = business[0]["rules"][0].get("routing", {}).get("路径", "")
         context = {"skill": skill_context(skill), "business_rules": business, "GZKJG": rules,
+                   'source_sha256':source_hash,
+                   "title": job.get('title') or job.get('upstream_metadata', {}).get('title', ''),
+                   "date_validation_policy": DATE_REPAIR,
                    "source_name": source.name, "pageTitle": title, "fileMd5": job.get("fileMd5", ""),
                    "publictime": job.get("publictime", ""), "upstream_metadata": job.get("upstream_metadata", {}),
                    "workbook": data, "history": history, "required_source_cells": job.get("required_source_cells", []),
                    "rule_derivation_policy": RULE_DERIVATION_POLICY,
                    "name_comparison_rules": name_rules, "name_review_basis": result["name_review_basis"]}
         dump(run_dir / "input-context.json", context)
+        from .code_cache import lookup as lookup_code_cache
+        cached_code = (lookup_code_cache(job.get('code_cache_dir'),context,'excel')
+                       if not job.get('resume_from_run') else None)
         if backend is None:
             from .deepseek import DeepSeekBackend
             backend = DeepSeekBackend.from_job(job)
         model_timeout = getattr(backend, "timeout", None)
+        from .source_preflight import check_source, ContentPreflightError
+        try:
+            result['source_preflight'] = timed('source_preflight',lambda:check_source(backend,data,rules,run_dir/'preflight',job))
+        except ContentPreflightError as exc:
+            result['failure_stage']='preflight'
+            return finish(exc.code,str(exc))
         if executor is None:
             mode = execution_backend or job.get("execution_backend", "local_python")
             if mode == "local_python":
@@ -527,6 +523,7 @@ def _run_job(job, job_base, backend=None, executor=None, docker=None, output_roo
         result["os_sandbox"] = isinstance(executor, DockerExecutor)
         result["model_provider"] = "deepseek" if backend.__class__.__name__ == "DeepSeekBackend" else "injected_test_backend"
         params = {"workbook": data, "source_name": source.name, "pageTitle": title,
+                  "title": context['title'],
                   "fileMd5": job.get("fileMd5", ""), "publictime": job.get("publictime", "")}
         download_seconds = sum(s["seconds"] for s in result["stage_timings"] if s["stage"] == "download")
         result["stage_timings"].append({"stage": "preprocessing", "seconds": round(time.monotonic() - started - download_seconds, 3)})
@@ -578,10 +575,21 @@ def _run_job(job, job_base, backend=None, executor=None, docker=None, output_roo
                     response, replay_response = replay_response, None
                     dump(folder / 'generation-reused.json', {'origin': result['resumed_from_run'],
                                                             'attempt': attempt, 'new_generation_call': False})
+                elif cached_code is not None:
+                    response = cached_code['response']
+                    result.update(cache_hit=True,cache_kind='code',cache_attempted=True)
+                    context['cached_asset_review'] = '本轮复用成功代码，但必须核对本次真实源表的取值、名称和统计期间；不得沿用历史日期。'
+                    dump(folder/'cache-provenance.json', {'source_run':cached_code['source_run'],
+                         'sha256':cached_code['sha256'],'new_generation_call':False,'execute_current_source':True})
+                    cached_code = None
                 else:
+                    result.update(cache_hit=False,cache_kind='')
                     response = timed("generate", lambda: backend.generate(context, folder))
                 if response["decision"] == "needs_review":
                     history.append({"attempt": attempt, "stage": "model_diagnosis", "decision": response})
+                    if context.get('output_repair', {}).get('code') in {'EMPTY_EXTRACTION', 'END_DATE_EMPTY'}:
+                        result['failure_stage'] = 'date_validation' if context['output_repair']['code'] == 'END_DATE_EMPTY' else 'extraction_validation'
+                        return finish(context['output_repair']['code'], response['explanation'])
                     return finish("BUSINESS_CONTEXT_REQUIRED", response["explanation"])
                 code = response["python_code"]
                 if "derived_rules" in response:
@@ -595,7 +603,11 @@ def _run_job(job, job_base, backend=None, executor=None, docker=None, output_roo
                 if isinstance(executor, (LocalPythonExecutor, DockerExecutor)):
                     executor.timeout = min(job.get("parser_timeout", 30), remaining())
                 rows = timed("execute", lambda: executor.execute(code_path, params, folder))
-                audit_sources(rows, data)
+                dump(folder / "ExcelData.json", {"ExcelData": rows})
+                if isinstance(rows, list) and rows:
+                    audit_sources(rows, data)
+                check_extraction(rows)
+                context.pop('output_repair', None)
                 audit_required_sources(rows, context["required_source_cells"])
                 dump(folder / "ExcelData.json", {"ExcelData": rows})
                 stage = "name_precheck"
@@ -680,6 +692,19 @@ def _run_job(job, job_base, backend=None, executor=None, docker=None, output_roo
                 notifications.extend(dict(event, attempt=attempt) for event in evaluation["notifications"])
                 if not incorrect:
                     return finish("NAME_REVIEW_UNCERTAIN", review["explanation"])
+            except OutputCheckError as exc:
+                stage = 'date_validation' if exc.code == 'END_DATE_EMPTY' else 'extraction_validation'
+                if exc.code == 'END_DATE_EMPTY':
+                    required = context['required_source_cells']
+                    for row in rows:
+                        if row['source'] not in required:
+                            required.append(dict(row['source']))
+                context['output_repair'] = {'code': exc.code, 'message': str(exc)}
+                history.append({'attempt': attempt, 'stage': stage, 'error_code': exc.code, 'error': str(exc), 'python_code': code})
+                notifications.append({'code': exc.code, 'stage': stage, 'attempt': attempt, 'message': str(exc)})
+                if attempt == attempts:
+                    result['failure_stage'] = stage
+                    return finish(exc.code, str(exc))
             except TotalDeadlineExceeded as exc:
                 return finish("TOTAL_TIMEOUT", str(exc))
             except ExecutionUnavailable as exc:
@@ -716,7 +741,16 @@ def _run_job(job, job_base, backend=None, executor=None, docker=None, output_roo
         return finish(exc.code, str(exc))
     except BackendUnavailable as exc:
         return finish("MODEL_BACKEND_UNAVAILABLE", str(exc))
+    except ModelOutputTruncated as exc:
+        return finish("MODEL_OUTPUT_TRUNCATED", str(exc))
+    except ModelContextTooLarge as exc:
+        return finish("MODEL_CONTEXT_TOO_LARGE", str(exc))
     except Exception as exc:
+        if isinstance(exc, ModuleNotFoundError) and exc.name in {'xlrd', 'openpyxl'}:
+            result['public_reason'] = '源文件读取失败：服务Python缺少依赖' + exc.name + '。'
+        elif result.get('stage') == 'rule_lookup' and isinstance(exc, ValueError) and any(
+                text in str(exc) for text in ('规则行应唯一', '完整Excel规则表', '请提供pagetitle')):
+            result['public_reason'] = str(exc)
         return finish("INPUT_OR_RUNTIME_ERROR", f"{type(exc).__name__}: {exc}")
 
 

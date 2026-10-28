@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "excel-match-agent"
-version = "0.2.0"
+version = "0.3.0"
 description = "DeepSeek-driven Excel, HTML and Markdown prompt parsing with semantic review and workflow matching"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -16,10 +16,11 @@ dev = ["build>=1", "PyYAML>=6,<7"]
 
 [project.scripts]
 excel-match-agent = "excel_match_agent.app:main"
+excel-match-agent-service = "excel_match_agent.service:main"
 
 [tool.setuptools.packages.find]
 include = ["excel_match_agent*"]
 exclude = ["excel_match_agent.tests*"]
 
 [tool.setuptools.package-data]
-excel_match_agent = ["assets/*.txt", "assets/*.json"]
+excel_match_agent = ["assets/*.txt", "assets/*.json", "workflow_nodes/*.py"]

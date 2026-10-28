@@ -7,7 +7,7 @@ from openpyxl import Workbook
 from excel_match_agent.app import run_job
 from excel_match_agent.deepseek import DeepSeekBackend
 from excel_match_agent.name_reference import attach_name_reference, comparison_rules, DEFAULT_WORKBOOK_NAME
-from excel_match_agent.tests.test_deepseek import answer
+from excel_match_agent.tests.test_deepseek import answer, csv_preflight_answer
 from excel_match_agent.tests.test_runtime import CODE, TestExecutor
 
 
@@ -37,6 +37,9 @@ class NameReferenceTests(unittest.TestCase):
         self.generated = 0
         def transport(request, timeout):
             payload = json.loads(request.data)
+            preflight = csv_preflight_answer(payload)
+            if preflight is not None:
+                return preflight
             self.requests.append(payload)
             context = json.loads(payload['messages'][1]['content'].split('\n', 1)[1])
             if 'parsed_data' not in context:

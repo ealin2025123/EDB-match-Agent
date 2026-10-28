@@ -141,6 +141,8 @@ class DeepSeekBackend:
 
     def generate(self, context, folder):
         system = PROMPT + "\n请返回JSON对象，generate包含完整python_code及derived_rules，needs_review解释缺失证据。输出schema：" + json.dumps(SCHEMA, ensure_ascii=False)
+        from .output_checks import DATE_REPAIR
+        system += '\n执行后空提取或缺日期将进入同一生成预算重建，output_repair为必须修复的问题。' + DATE_REPAIR
         return self._complete(system, context, folder, SCHEMA,
                               lambda content: validate_decision(content, require_derivation=bool(context.get("rule_derivation_policy"))))
 
@@ -268,6 +270,19 @@ class DeepSeekBackend:
                 if isinstance(second, (ModelOutputTruncated, ModelContextTooLarge)):
                     raise
                 raise NameReviewProtocolError("DeepSeek审核响应补问后仍未通过契约校验，停止导出，未把该格式问题当作名称构造错误重建代码：" + str(second)) from second
+
+    def check_source(self, context, folder, job):
+        from .source_preflight import SYSTEM, validate_decision as validate_source
+        timeout = job.get('preflight_timeout',120)
+        if type(timeout) not in (int,float) or timeout <= 0:
+            raise ValueError('preflight_timeout须为正数秒数')
+        previous = self.timeout
+        self.timeout = min(previous,timeout)
+        try:
+            return self._complete(SYSTEM,context,folder,{'type':'object'},
+                                  lambda text:validate_source(text,context['source_text'],context['GZKJG']))
+        finally:
+            self.timeout = previous
 
     def _complete(self, system, context, folder, schema, validator):
         user = "本轮业务上下文与历史诊断：\n" + json.dumps(model_context(context), ensure_ascii=False, default=str)

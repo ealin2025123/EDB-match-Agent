@@ -172,7 +172,7 @@ class MarkdownTests(unittest.TestCase):
     def test_markdown_not_original_file_fallback(self):
         job={**self.job};job.pop('markdownMD5')
         result=run_job({**job,'fileMd5':'other'},self.base,backend=FakeModel())
-        self.assertEqual(result['failure_kind'],'INVALID_INPUT')
+        self.assertEqual(result['failure_kind'],'MARKDOWN_MD5_MISSING')
 
     def test_alias_conflict(self):
         with self.assertRaises(ValueError):

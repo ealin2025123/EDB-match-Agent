@@ -1,0 +1,24 @@
+{
+  "pageTitle": "演示来源\\统计信息",
+  "fileType": "xlsx",
+  "fileMd5": "REPLACE_WITH_SOURCE_FILE_ID",
+  "title": "REPLACE_WITH_ACTUAL_SOURCE_TITLE",
+  "publictime": "",
+  "workflow_run_id": "REPLACE_WITH_STABLE_WORKFLOW_RUN_ID",
+  "GZKJG": [
+    {
+      "rule_indicator_code": "1",
+      "rule_indicator_name": "合成甲累计",
+      "rule_constant_name": "万元",
+      "rule_unit_ratio": "",
+      "indicator_release_frequency": "月"
+    },
+    {
+      "rule_indicator_code": "2",
+      "rule_indicator_name": "合成乙累计",
+      "rule_constant_name": "万元",
+      "rule_unit_ratio": "",
+      "indicator_release_frequency": "月"
+    }
+  ]
+}

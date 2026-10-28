@@ -1,111 +1,123 @@
 # EDB Match Agent
 
-使用你自己的 **DeepSeek / OpenAI 兼容 API**，从源内容及 Skill 生成解析资产，执行、精确匹配 GZK、独立审核，并输出与原工作流兼容的 JSON。支持 **Excel、HTML、Prompt** 三种分支，默认纯 Python，可在 VS Code 终端独立运行。
+**基于 DeepSeek 的经济指标解析与匹配 Agent：支持 Excel、HTML 与 Markdown Prompt，提供 CLI、HTTP 服务及 DC 工作流接入。**
 
-项目本身是 Agent；Skills 是交给 DeepSeek 的规范。业务代码生成、提示词生成、模型提取、语义判断及修复调用你的 API；Python 负责下载、调度、执行、匹配和校验，不调用 Codex 生成业务解析代码。
+针对统计文件结构不统一、人工编写解析规则成本高的问题，根据当前源文件、规则库及 Skill 生成 Python 解析代码或提取提示词，执行提取、指标匹配和独立源文审核。业务判断及修复使用用户配置的 DeepSeek / OpenAI 兼容 API，Python 负责调度、执行和校验。
 
-## 三种分支
+技术栈：Python · DeepSeek · Prompt Engineering · Skill · HTTP API · SQLite · OpenPyXL · xlrd
 
-| parse_strategy | 输入内容 | DeepSeek 生成/执行 | 最终交付 |
+## 工作流程
+
+```mermaid
+flowchart LR
+    A[请求与 GZK 校验] --> B[下载并读取真实源文件]
+    B --> C[DeepSeek 内容预审]
+    C --> D{存在有效缓存?}
+    D -->|是| E[复用解析资产]
+    D -->|否| F[DeepSeek 生成代码或提示词]
+    E --> G[执行当前源文件]
+    F --> G
+    G --> H[名称与编码匹配 / 源文证据审核]
+    H -->|通过| I[校验并交付]
+    H -->|可修复且有剩余预算| F
+```
+
+- **三种解析分支**：Excel 读取原始工作簿；HTML 根据 Markdown 和名称正则生成 Python；Prompt 生成可复用提示词并调用模型提取。
+- **质量闭环**：无有效 GZK 时停止；真实正文预审后再生成；核对源值、指标身份、遗漏及统计期间，首次生成加最多两次重建。证据不足不武断判为无数据。
+- **同路径资产缓存**：按数据源路径归组，结合规则、GZK 和 Skill 内容校验有效性；复用已审核代码或提示词，减少重复生成的 Token 成本。当前文件仍需执行和审核，Prompt 的模型提取仍会消耗 Token。
+- **异步任务服务**：HTTP 受理、SQLite 持久化、幂等提交和同任务轮询；具体错误码、中文原因及处理建议直达工作流。
+- **完整交付**：审核通过的资产校验 SHA256；在结果传输中提供 Base64 备份，兼容 DC 丢失独立代码字段的场景，恢复后仍严格校验哈希。
+
+## 三种分支与输出
+
+| 分支 | 源输入 | 资产 | HTTP `result` 的业务字段 |
 | --- | --- | --- | --- |
-| excel | fileMd5 原文件或本地 Excel/CSV、规则表、GZK | 生成 Python，执行后审核 | 匹配 JSON、完整平台 PY/TXT |
-| html | markdownMD5 正文、规则表、名称正则、GZK、原网页核验 | 生成 Python，执行后审核 | 匹配 JSON、完整平台 PY/TXT |
-| prompt | markdownMD5 正文、规则表、GZK | 生成 Prompt，调用模型提取并审核 | TXT 契约的匹配 JSON、Prompt Markdown |
+| `excel` | `fileMd5` 原文件或 CLI 本地 Excel/CSV | 完整平台 Python | `OUTDATA`、`unitArray`、`codeOutputResult`、`excel_data` |
+| `html` | `markdownMD5` 正文，生成期核对原网页 | 完整平台 Python | `OUTDATA`、`unitArray`、`codeOutputResult`、`excel_data` |
+| `prompt` | `markdownMD5` 对应的已转换正文 | Markdown 提示词 | `OUTDATA` |
 
-HTML/Prompt 按下载地址加 `/markdownMD5` 获取正文，不用 fileMd5 原文件代替。HTML 原网页只用于生成期设计和核验；交付解析器运行时只下载 Markdown。
+HTTP 服务按真实 `fileType` 选择分支。`html/htm/shtml` 进入 HTML，`xls/xlsx/csv` 进入 Excel，`pdf/doc/docx/md/txt/png/jpg` 等进入 Prompt。不要把 `fileType` 填成 `prompt`；Prompt 不负责 OCR 或文档转换，需要上游先提供可用 Markdown。
 
-三分支共用“解析 → 匹配 → 审核 → 必要时重建”闭环，保留各自输出契约：Excel/HTML 输出 unitArray、codeOutputResult、OUTDATA；Prompt 只输出 OUTDATA，保留 TXT 分支频率字段，没有 unitArray 和 SJPLLB。
+`excel_data` 是最终审核通过轮次的原始四字段明细，保留原始数值和单位；`OUTDATA` 是匹配结果。实际单位换算由下游完成，避免重复换算。统计截止日期不能由 `publictime` 代替。
 
-## 判断与重建规则
+> CLI 的 `node-output.json` 保持原业务契约：Excel/HTML 三字段，Prompt 仅 `OUTDATA`。HTTP 额外交付 Excel/HTML 原始明细，并附传输专用 `_asset_transfer`；最新版接出脚本校验、移除传输字段后再输出业务结果。
 
-- Excel 的规则表提供名称示例、名称取值逻辑；单位及日期逻辑由 DeepSeek 根据实际源表推导。实际统计期间优先，历史示例和发布时间不能覆盖源表。
-- 结合名称拼接/正则规则预判断，再由 DeepSeek 判断同一指标；同一指标最终使用 GZK 名称和编码。
-- **明确不同口径不匹配，继续其他指标**。例如本外币贷款不能当作外币贷款，对应同比同理。正则命中子串不代表业务相同。
-- 单位、频率辅助语义判断；可换算单位不阻止匹配，单位转换由后续节点处理。
-- **没有匹配率门槛**。没有应对应但名称未匹配的问题，且至少匹配 **2 个不同编码**即可通过；否则按证据重建代码或 Prompt。
-- 首次生成后最多重建 **2 次**，仍未通过交人工处理；GZK 为空直接报告。
-- HTML/Prompt 生成 JSON 重复字段等格式错误时，向同一 DeepSeek 自动补问一次；不静默覆盖重复键，不占业务重建次数。仍无效返回 MODEL_PROTOCOL_FAILED。
-- 截断内容不执行；认证、网络、上游正文丢失和平台导出失败报告具体原因，不重置业务预算。
+## 安装
 
-## 安装和配置
-
-需要 Python 3.10+。在克隆或下载的项目根目录运行：
+需要 Python 3.10+，推荐从仓库完整克隆或下载后运行：
 
 ```powershell
 python -m venv .venv
-& ".\.venv\Scripts\python.exe" -m pip install -e ".[xls]"
+& .\.venv\Scripts\python.exe -m pip install -e ".[xls]"
 Copy-Item .env.example .env
 ```
 
-本机 .env 填写：
+在本机 `.env` 填写 `DEEPSEEK_API_KEY`、实际支持的 `DEEPSEEK_BASE_URL` 和 `DEEPSEEK_MODEL`。模型凭据不会提供给解析子进程；不要将 `.env` 提交到 Git。Linux/macOS 使用 `.venv/bin/python`。
 
-```dotenv
-DEEPSEEK_API_KEY=填写平台Key
-DEEPSEEK_API_KEY_ENV=DEEPSEEK_API_KEY
-DEEPSEEK_BASE_URL=填写你的兼容API地址
-DEEPSEEK_MODEL=填写实际支持的模型ID
-```
+真实规则库和源数据放 `private/`，不随仓库分发。示例下载地址 `example.invalid` 不可用，必须替换。规则文件和 Skill 的相对路径以任务配置文件所在目录为基准。
 
-程序自动添加 Authorization: Bearer，无需另填一份相同 Token。job 显式配置优先于环境默认值，不回退到其他模型提供商。仓库只分发空 Key 的 .env.example。
+## CLI 运行
 
-VS Code 打开项目根目录，选择 .venv 内解释器。Linux/macOS 使用 .venv/bin/python。只处理 xlsx/csv 可安装 `-e .`，旧 xls 才需要 xlrd。
-
-## 准备并运行任务
-
-分别使用 [Excel 模板](examples/excel-job.json)、[HTML 模板](examples/html-job.json)、[Prompt 模板](examples/prompt-job.json)，各自固定 parse_strategy。
+分别使用 [Excel](examples/excel-job.json)、[HTML](examples/html-job.json)、[Prompt](examples/prompt-job.json) 模板，填写自己的规则表、下载地址及本次输入。每次任务必须提供有效 `GZKJG`。
 
 ```powershell
-Copy-Item examples/html-job.json examples/html.private.json
-# 编辑 html.private.json 后运行：
-& ".\.venv\Scripts\python.exe" -m excel_match_agent run --job ".\examples\html.private.json" --diagnostics
+& .\.venv\Scripts\python.exe -m excel_match_agent run --job examples/excel-job.json --diagnostics
 ```
 
-真实任务放 private/ 或 *.private.json，均被 Git 忽略。相对路径**以 job 文件所在目录为基准**。example.invalid 是不可用占位地址，运行前必须替换。
+无需真实业务文件的合成样例见 `examples/job.local.json`、`examples/prompt.local.json`；运行这些样例仍会调用实际模型，不属于离线测试。
 
-| 输入 | Excel | HTML / Prompt |
-| --- | --- | --- |
-| 开始节点 | fileMd5、pageTitle、可选上游元数据 | start_file 指向开始节点 TXT/JSON，含 markdownMD5 |
-| 规则库 | gzk_file 支持纯 JSON 及平台导出 TXT | gzk_file 使用规则库查询转**输出** TXT/JSON |
-| 规则行 | excelrule_path，按路径定位 | rule_source=workbook、excelrule_path、rule_sheet、rule_row |
-| 行内规则 | 名称示例及取值逻辑 | 也可直接提供 rule 对象；workbook 模式自动读取，不重复填写 |
-| 正则 | 名称拼接表按配置读取 | HTML/登记正则任务配置 regex_path 或 legacy_regex_path；普通表格 Prompt 不需要 |
-| Skill | 模板已配置 | 模板分别指向对应 Skill |
+## 启动 HTTP 服务
 
-新正则表：汇总 Sheet 的 C 列任务 ID 精确匹配路径代码，F 列名称、K 列 selectors 中 regex rules，同任务全部行读取。旧表：按精确路径代码找同名 Sheet，读取 A/B 列。超过15位编码应存为文本；精度丢失时使用经核实的 rule_overrides，不猜数字。
+```powershell
+& .\.venv\Scripts\python.exe -m excel_match_agent.service init-config
+# 编辑生成的 excel_match_agent/service-runtime/config.json：
+# 核对 profiles 指向的三分支任务配置；按部署环境设置 host 和端口。
+& .\.venv\Scripts\python.exe -m excel_match_agent.service check-config
+& .\.venv\Scripts\python.exe -m excel_match_agent.service serve
+```
 
-合成示例：Excel 使用 examples/job.local.json，Prompt 使用 examples/prompt.local.json。它们会调用真实模型，但不含业务数据。doctor 当前针对 Excel 配置，不作为 HTML/Prompt 完整预检。
+默认仅监听 `127.0.0.1:8767`；DC 运行在其他机器时需显式配置可达地址及相应网络权限。`api_token` 是独立服务令牌，不是 DeepSeek Key。不要把 `config.json` 或令牌上传到仓库。
 
-## 到哪里找结果
-
-终端 --diagnostics 显示 output_dir 和状态；每次新建 runs/日期时间-随机编号/，按修改时间找到本次目录。
-
-| 文件 | 用途 |
+| 方法与路径 | 作用 |
 | --- | --- |
-| run-result.json | status、错误、审核、重建次数和阶段耗时 |
-| node-output.json | 最终匹配 JSON，仅正式成功时导出 |
-| platform/platform-parser.py / .txt | Excel/HTML 完整平台代码，复制全部内容到工作流 |
-| platform/platform-validation.json | 真实下载入口与审核结果一致性验证 |
-| attempt-N/parser.py | 内部核心，不直接贴到只接收 MD5 的平台节点 |
-| attempt-N/prompt.md | Prompt 提示词，取报告 verified_asset 指向的通过版本 |
-| attempt-N/generation/protocol-repair/ | HTML/Prompt 格式补问记录 |
+| `GET /health` | 无需认证的健康检查 |
+| `POST /v1/match/jobs` | 受理任务，返回 `job_id`；需 Bearer 服务令牌 |
+| `GET /v1/match/jobs/{job_id}` | 查询同一任务；支持 `wait_seconds=0..25` |
 
-正式通过为 candidate_pass。HTML 经用户明确授权只回归 Markdown 时为 markdown_verified_pending_webpage，结果在 regression-node-output.json，不作为正式通过。失败时查看 failure_kind、notifications 和 human-review.json，不把历史文件当本次成功结果。
+DC 使用 [接入脚本](excel_match_agent/workflow_nodes/DC_Agent接入.py) 与 [统一接出脚本](excel_match_agent/workflow_nodes/DC_匹配结果输出.py)。填入自己的服务基址、独立服务令牌，并完整映射 `agent` 输出。Prompt 需保留 `PromptCode/PromptFile`，HTML/Excel 需映射 `excel_data`。
 
-Excel 平台入口按 fileMd5 下载原文件；HTML 按 markdownMD5 下载正文，均返回 code/msg/ExcelData。Prompt 交付提示词，在工作流模型节点执行。平台解析代码运行时不再调用模型。
+`queued/running` 是等待状态，`DC_AGENT_RETRY` 要求继续查询同一个 `job_id`。客户端未取得任务编号时，保持输入与 `workflow_run_id` 一致重试，避免重复提交。`ready` 才执行接出；终止失败不会自动重跑历史任务。
 
-## 测试、隐私及限制
+详细说明：[部署与 DC 接入](docs/http-service.md) · [输入输出契约](docs/contracts.md) · [缓存及原始明细](docs/cache-and-quality.md) · [排障](docs/troubleshooting.md)
 
-离线检查不调用真实 API：
+## 代码与结果在哪里
+
+```text
+excel_match_agent/
+  app.py / markdown_agent.py       三分支生成、执行及审核闭环
+  service.py / service_worker.py   HTTP 服务与独立任务进程
+  code_cache.py                   路径分组、版本及公开资产校验
+  source_preflight.py              基于真实源文的内容预审
+  output_checks.py                 空结果与统计期间校验
+  workflow_nodes/                 DC 接入、接出和连通性诊断
+  tests/                         假模型、合成文件及本机 HTTP 测试
+skills/                          三类业务生成规范
+examples/                        脱敏模板与合成数据
+```
+
+默认服务输出位于 `excel_match_agent/service-runtime/`，每个任务有独立目录及运行证据。已审核解析资产另存到 `excel_match_agent/code/excel/`、`code/html/`、`code/prompt/`，全路径中的分隔符替换为下划线；任务目录保留原版本和失败记录。CLI 的运行目录由 `output_dir` 控制。
+
+## 测试与限制
 
 ```powershell
-python -X utf8 -m unittest discover -s excel_match_agent/tests -q
+python -X utf8 -m unittest discover -s excel_match_agent/tests -t . -q
 python -X utf8 scripts/check_release.py
 ```
 
-GitHub Actions 在 Windows/Linux 运行测试和隐私扫描。凭据、真实文件、工作簿、任务、运行记录及模型请求不纳入仓库或发布包；内网地址用本机配置。本地 .env 保留，不上传。
+测试使用合成数据、假模型和本机 HTTP，不调用真实 DeepSeek、不重跑历史业务任务。GitHub Actions 在 Windows/Linux 执行相同检查；本机测试通过不等于 DC 实测通过。
 
-默认 total_timeout=null，没有整体120秒限制，各阶段仍有独立超时。耗时查看 elapsed_seconds，不保证每个任务120秒内完成。Python 子进程和 AST 白名单不是操作系统级沙箱；Docker 是内部解析的可选后端。
+默认没有整体 120 秒限制，各阶段独立超时；普通 Python 子进程及 AST 白名单不是操作系统级沙箱。当前服务单业务 worker 串行执行，适合受控环境部署；对不可信多租户需另行提供隔离。缓存降低重复生成成本，不保证零 Token 或固定耗时。
 
-目前是本地 CLI，尚无 HTTP 服务及上游 GZK 查询 API。完整使用请克隆仓库或下载源代码包；单独安装 wheel 时仍需外部 Skill 路径。项目尚未指定开源许可证。
+仓库不包含密钥、企业规则表、真实业务源文件、已生成的来源专用资产、运行日志和本机历史任务。尚未指定开源许可证，仓库可见性保持不变。
 
-[输入输出约定](docs/contracts.md) · [独立测试指南](docs/testing-guide.md) · [排障](docs/troubleshooting.md) · [更新记录](CHANGELOG.md) · [隐私](SECURITY.md)
+[测试指南](docs/testing-guide.md) · [更新记录](CHANGELOG.md) · [贡献说明](CONTRIBUTING.md) · [安全与隐私](SECURITY.md)

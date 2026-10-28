@@ -1,5 +1,7 @@
 # 排障
 
+HTTP/DC 场景优先看 [服务接入指南](http-service.md) 的常见错误。DC_AGENT_RETRY 是继续查询同一 job_id 的等待提示，不表示模型失败；不要据此清空编号。HTML 新增 excel_data 后必须使用最新版统一接出脚本。
+
 | 现象 | 检查位置与处理 |
 | --- | --- |
 | ExcelData 为空，GZK 有数据 | 先看解析节点 code/msg。不要把内部 workbook-only 核心直接贴到只传 fileMd5 的平台节点；使用完整 platform-parser.txt |

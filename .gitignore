@@ -25,3 +25,14 @@ data/
 htmlcov/
 .pytest_cache/
 .DS_Store
+
+service-runtime/
+**/service-runtime/
+**/完整excelrule表/
+**/code-cache/
+excel_match_agent/code/**/*.py
+excel_match_agent/code/**/*.md
+!excel_match_agent/code/README.md
+*.sqlite3
+*.sqlite3-*
+*.db

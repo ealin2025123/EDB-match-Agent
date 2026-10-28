@@ -7,7 +7,7 @@ from openpyxl import Workbook, load_workbook
 from excel_match_agent.app import run_job
 from excel_match_agent.deepseek import DeepSeekBackend, validate_decision
 from excel_match_agent.rule_derivation import FIELDS, POLICY
-from excel_match_agent.tests.test_deepseek import answer
+from excel_match_agent.tests.test_deepseek import answer, csv_preflight_answer
 from excel_match_agent.tests.test_runtime import TestExecutor
 
 
@@ -37,6 +37,9 @@ class RuleDerivationTests(unittest.TestCase):
             requests = []
             def transport(request, timeout):
                 payload = json.loads(request.data)
+                preflight = csv_preflight_answer(payload)
+                if preflight is not None:
+                    return preflight
                 requests.append(payload)
                 if len(requests) == 1:
                     context = json.loads(payload['messages'][1]['content'].split('\n', 1)[1])

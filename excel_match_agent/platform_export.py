@@ -7,7 +7,6 @@ import subprocess
 import sys
 
 from .worker import check_code
-from .source_download import DEFAULT_DOWNLOAD_BASE_URL, download_url
 
 ASSETS = Path(__file__).with_name('assets')
 
@@ -53,12 +52,6 @@ def export_platform_parser(core_path, expected_rows, params, run_dir, job, timeo
     core = core_path.read_text(encoding='utf-8')
     check_code(core)
     adapter, proof = load_adapter()
-    base_url = job.get('download_base_url', DEFAULT_DOWNLOAD_BASE_URL)
-    download_url(base_url, params.get('fileMd5') or 'validation')
-    marker = json.dumps(DEFAULT_DOWNLOAD_BASE_URL.rstrip('/') + '/')
-    if adapter.count(marker) != 1:
-        raise PlatformExportError('平台下载地址模板不是唯一配置位置')
-    adapter = adapter.replace(marker, json.dumps(base_url.rstrip('/') + '/'), 1)
     code = core + '\n\n# 平台下载读取入口：DeepSeek生成的通用适配层，原业务源码保持不变。\n' + adapter + '\n'
     compile(code, 'platform-parser.py', 'exec')
     path = folder / 'platform-parser.py'
@@ -89,7 +82,7 @@ def export_platform_parser(core_path, expected_rows, params, run_dir, job, timeo
         raise PlatformExportError('平台实际解析数据的匹配输出与Agent结果不一致')
     report = {'status': 'verified' if live else 'snapshot_verified', 'core_preserved_verbatim': code.startswith(core),
         'core_path': str(core_path), 'core_sha256': hashlib.sha256(core.encode('utf-8')).hexdigest(),
-        'adapter_provider': proof['provider'], 'adapter_model': proof.get('model'), 'adapter_template_sha256': proof['sha256'], 'adapter_sha256': hashlib.sha256(adapter.encode('utf-8')).hexdigest(),
+        'adapter_provider': proof['provider'], 'adapter_model': proof.get('model'), 'adapter_sha256': proof['sha256'],
         'platform_code_sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
         'snapshot_equal': True, 'real_download_tested': live, 'platform_rows_equal_verified_rows': True,
         'matching_output_equal': True, 'parsed_count': len(expected_rows),

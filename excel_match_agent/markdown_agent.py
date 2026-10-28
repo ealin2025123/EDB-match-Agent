@@ -19,6 +19,7 @@ from .markdown_protocol import (HTML_GENERATE, PROMPT_GENERATE, REVIEW_PROMPT, j
 from .source_download import SourceDownloadError
 from .platform_export import PlatformExportError
 from .html_platform_export import export_html_platform_parser
+from .output_checks import check_extraction, OutputCheckError, DATE_REPAIR
 
 
 def strategy_for(job):
@@ -215,6 +216,7 @@ def run_markdown_job(job, job_base, backend=None, executor=None, output_root=Non
     deadline = _deadline if _deadline is not None else started + budget if budget else float("inf")
 
     def timed(stage, callback):
+        result['stage'] = stage
         if time.monotonic() >= deadline:
             raise TotalDeadlineExceeded("整体预算耗尽")
         print(json.dumps({"run_id": run.name, "stage": stage}, ensure_ascii=False), file=sys.stderr, flush=True)
@@ -233,6 +235,7 @@ def run_markdown_job(job, job_base, backend=None, executor=None, output_root=Non
         result.update(failure_kind=kind, requires_human_review=bool(kind),
                       rebuilds=max(0, result["attempts"] - 1), elapsed_seconds=round(time.monotonic() - started, 3))
         if kind:
+            result.setdefault('failure_stage', result.get('stage', 'input_validation'))
             result["status"] = ("markdown_verified_pending_webpage" if kind == "WEBPAGE_VERIFICATION_PENDING"
                                 else "needs_review")
             result["production_ready"] = False
@@ -257,22 +260,37 @@ def run_markdown_job(job, job_base, backend=None, executor=None, output_root=Non
         if not isinstance(html_export, bool):
             raise ValueError('export_platform_parser须为布尔值')
         result['html_platform_export_enabled'] = html_export
-        rules = task_rules(job, resolve)
+        try:
+            rules = task_rules(job, resolve)
+        except (ValueError, TypeError, KeyError, AttributeError):
+            return finish('GZKJG_INVALID', '指标规则为空或无效：GZKJG结构或字段非法。')
+        if any(not isinstance(r.get('rule_indicator_name'), str) or not r['rule_indicator_name'].strip()
+               or not r.get('rule_indicator_code') for r in rules):
+            return finish('GZKJG_INVALID', '指标规则为空或无效：规则须包含有效指标名称和编码。')
         preflight = evaluate([], rules)
-        if preflight["failure_kind"] in {"GZKJG_EMPTY", "GZKJG_INVALID", "RULE_AMBIGUITY"}:
-            return finish(preflight["failure_kind"], "GZK为空、无效或名称存在歧义，停止生成")
+        if preflight["failure_kind"] in {"GZKJG_EMPTY", "GZKJG_INVALID", "RULE_AMBIGUITY", "RULE_FIELDS_INVALID"}:
+            return finish(preflight["failure_kind"], "指标规则为空或无效，或名称存在歧义，停止生成")
         attempts = job.get("max_attempts", 3)
         if type(attempts) is not int or not 1 <= attempts <= 3:
             raise ValueError("首次生成加最多两次重建，max_attempts须为1..3")
-        row = rule_row(job, resolve)
+        row = timed('rule_lookup',lambda:rule_row(job, resolve))
         for key in ("备注", "是否通过初步测试"):
             if any(term in str(row.get(key, "")) for term in ("无正则表", "无正则拼接", "MD5错误且文件错误", "文件错误且MD5错误", "文件错误且md5错误")):
                 return finish("RULE_BLOCKED", "规则行明确标记无法生成: " + str(row[key]))
         regex_needed = strategy == "html" or "登记正则" in str(row.get("指标名称取值逻辑", ""))
-        regex = regex_rules(job, row, resolve) if regex_needed else {"rules": [], "format": "not_needed"}
+        regex = timed('regex_lookup',lambda:regex_rules(job, row, resolve)) if regex_needed else {"rules": [], "format": "not_needed"}
         dump(run / "business-rules.json", {"rule": row, "regex": regex})
         markdown, acquired = timed("acquire_markdown", lambda: acquire_markdown(job, resolve, run))
         result["source_acquisition"] = acquired
+        if backend is None:
+            from .deepseek import DeepSeekBackend
+            backend = DeepSeekBackend.from_job(job)
+        from .source_preflight import check_source, ContentPreflightError
+        try:
+            result['source_preflight'] = timed('source_preflight',lambda:check_source(backend,markdown,rules,run/'preflight',job))
+        except ContentPreflightError as exc:
+            result['failure_stage']='preflight'
+            return finish(exc.code,str(exc))
         if regression_only:
             page = {"status": "pending_verification", "url": row.get("source_url", ""),
                     "authorization": job["webpage_defer_authorization"],
@@ -286,6 +304,9 @@ def run_markdown_job(job, job_base, backend=None, executor=None, output_root=Non
         # 路径属于本机审计信息，不进入业务提示词；Skill本身说明保留。
         regex_for_model = {"format": regex["format"], "sheet": regex.get("sheet", ""), "rules": regex["rules"]}
         context = {"skill": [item["content"] for item in skill_context(skill)], "rule": row,
+                   'source_sha256':acquired.get('sha256',''),
+                   'pageTitle':job.get('pageTitle',''),
+                   "date_validation_policy": DATE_REPAIR,
                    "Markdown": markdown, "title": job.get("title", ""), "publictime": job.get("publictime", ""),
                    "GZK": {**job.get("GZK", {}), "GZKJG": rules}, "GZKJG": rules,
                    "regex": regex_for_model, "original_webpage": page,
@@ -298,6 +319,9 @@ def run_markdown_job(job, job_base, backend=None, executor=None, output_root=Non
                 "仍须严格核验Markdown中的名称、数值、期间、正则和遗漏；真实业务口径歧义仍应报告。"
                 "不得声明网页已核验，运行时不得回退原HTML或其他MD5。")
         dump(run / "input-context.json", context)
+        from .code_cache import lookup as lookup_code_cache
+        cached_code = (lookup_code_cache(job.get('code_cache_dir'),context,strategy) if not any(
+            job.get(k) for k in ('continue_from_run','replay_generated_from_run','repair_generation_from_run')) else None)
         if backend is None:
             from .deepseek import DeepSeekBackend
             backend = DeepSeekBackend.from_job(job)
@@ -352,7 +376,14 @@ def run_markdown_job(job, job_base, backend=None, executor=None, output_root=Non
                 shutil.copytree(replay_source, generation)
                 dump(generation / "recovery-provenance.json", {"source": str(replay_source),
                      "raw_response_edited": False, "input_context_validated": True, "new_generation_call": False})
+            elif cached_code is not None:
+                asset = validate_asset(json.dumps(cached_code['response'],ensure_ascii=False),strategy)
+                result.update(cache_hit=True,cache_kind='code',cache_attempted=True)
+                dump(folder/'cache-provenance.json',{'source_run':cached_code['source_run'],
+                     'sha256':cached_code['sha256'],'new_generation_call':False,'execute_current_source':True})
+                cached_code = None
             else:
+                result.update(cache_hit=False,cache_kind='')
                 saved_content = None
                 if repair_source is not None:
                     shutil.copytree(repair_source, folder / "generation")
@@ -362,9 +393,13 @@ def run_markdown_job(job, job_base, backend=None, executor=None, output_root=Non
                         "input_context_validated": True, "new_business_generation_call": False})
                     repair_source = None
                 asset = timed("generate_" + strategy, lambda: checked_generation(
-                    backend, HTML_GENERATE if strategy == "html" else PROMPT_GENERATE,
+                    backend, (HTML_GENERATE if strategy == "html" else PROMPT_GENERATE) + '\n' + DATE_REPAIR,
                     context, folder / "generation", strategy, saved_content))
             if asset["decision"] == "needs_review":
+                if context.get('output_repair'):
+                    code = context['output_repair']['code']
+                    result['failure_stage'] = 'date_validation' if code == 'END_DATE_EMPTY' else 'extraction_validation'
+                    return finish(code, asset['explanation'])
                 return finish("BUSINESS_AMBIGUITY", asset["explanation"])
             field = "python_code" if strategy == "html" else "prompt_code"
             code = asset[field]
@@ -383,8 +418,11 @@ def run_markdown_job(job, job_base, backend=None, executor=None, output_root=Non
                     extracted = timed("execute_prompt", lambda: request(backend, code,
                         {"Markdown": markdown, "title": job.get("title", ""),
                          "GZK": context["GZK"], "publictime": job.get("publictime", "")},
-                        folder / "extraction", validate_extraction))
+                        folder / "extraction", lambda content: validate_extraction(content, defer_output_validation=True)))
                     rows = extracted["out_data"]
+                dump(folder / "parsed-data.json", rows)
+                check_extraction(rows)
+                context.pop('output_repair', None)
                 validate_rows(rows, strategy)
                 dump(folder / "parsed-data.json", rows)
                 evaluation = match_rows(rows, rules, job)
@@ -428,6 +466,14 @@ def run_markdown_job(job, job_base, backend=None, executor=None, output_root=Non
                                   verification_level="网页与Markdown均验证" if strategy == "html" else "Markdown模型提取与证据审核均验证")
                     return finish()
                 record["rebuild_reason"] = "审核发现构造/遗漏问题" if review["status"] != "correct" else "有效匹配不足两个不同指标"
+            except OutputCheckError as exc:
+                stage = 'date_validation' if exc.code == 'END_DATE_EMPTY' else 'extraction_validation'
+                context['output_repair'] = {'code': exc.code, 'message': str(exc)}
+                record.update(error_code=exc.code, execution_error=str(exc), stage=stage)
+                result['history'].append(record)
+                if attempt == attempts:
+                    result['failure_stage'] = stage
+                    return finish(exc.code, str(exc))
             except (ModelOutputTruncated, ModelContextTooLarge, NameReviewProtocolError, BackendUnavailable, TotalDeadlineExceeded):
                 raise
             except PlatformExportError as exc:

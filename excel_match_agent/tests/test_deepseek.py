@@ -25,6 +25,13 @@ def stream_answer(*events):
     return io.BytesIO(b''.join(b'data: ' + (b'[DONE]' if event == '[DONE]' else json.dumps(event, ensure_ascii=False).encode('utf-8')) + b'\n\n' for event in events))
 
 
+def csv_preflight_answer(payload):
+    if '[source_preflight_v1]' in payload['messages'][0]['content']:
+        return answer(message={'content':json.dumps({'decision':'has_relevant_data','reason':'离线夹具包含GDP数值',
+            'related_indicator_names':['GDP'],'evidence':['GDP | 0 | unit']})})
+    return None
+
+
 class DeepSeekTests(unittest.TestCase):
     def test_review_cache_revalidates_original_response_without_call(self):
         row = {'indicator_name': 'GDP', 'source': {'sheet': 's', 'cell': 'B1'}}
@@ -283,6 +290,9 @@ class DeepSeekTests(unittest.TestCase):
         (self.folder / 'SKILL.md').write_text('按列读取', encoding='utf-8')
         sent = []
         def transport(request, timeout):
+            if '[source_preflight_v1]' in json.loads(request.data)['messages'][0]['content']:
+                return answer(message={'content':json.dumps({'decision':'has_relevant_data','reason':'真实夹具有GDP数值',
+                    'related_indicator_names':['GDP'],'evidence':['GDP | 0 | unit']})})
             sent.append(request)
             return answer() if len(sent) == 1 else answer(message={'content': '{}'})
         job = {'source_path': 'source.csv', 'skill_path': 'SKILL.md', 'output_dir': 'runs', 'GZKJG': [
@@ -306,15 +316,15 @@ class DeepSeekTests(unittest.TestCase):
         self.assertEqual(backend.api_key_env, "DEEPSEEK_API_KEY")
 
     def test_gateway_profile_does_not_send_the_official_key(self):
-        env = {'DEEPSEEK_BASE_URL': 'https://gateway.example.invalid/v1', 'DEEPSEEK_MODEL': 'bl-deepseek-v4.1-flash',
-               'DEEPSEEK_API_KEY_ENV': 'GILDATA_API_TOKEN', 'DEEPSEEK_API_KEY': 'official-test-key', 'GILDATA_API_TOKEN': ''}
+        env = {'DEEPSEEK_BASE_URL': 'https://llm.example.invalid/v1', 'DEEPSEEK_MODEL': 'bl-deepseek-v4.1-flash',
+               'DEEPSEEK_API_KEY_ENV': 'CUSTOM_LLM_API_TOKEN', 'DEEPSEEK_API_KEY': 'official-test-key', 'CUSTOM_LLM_API_TOKEN': ''}
         with patch('excel_match_agent.deepseek.load_environment'), patch.dict(os.environ, env):
             backend = DeepSeekBackend.from_job({})
-            self.assertEqual(backend.url, 'https://gateway.example.invalid/v1/chat/completions')
-            self.assertEqual(backend.api_key_env, 'GILDATA_API_TOKEN')
-            with self.assertRaisesRegex(BackendUnavailable, 'GILDATA_API_TOKEN'):
+            self.assertEqual(backend.url, 'https://llm.example.invalid/v1/chat/completions')
+            self.assertEqual(backend.api_key_env, 'CUSTOM_LLM_API_TOKEN')
+            with self.assertRaisesRegex(BackendUnavailable, 'CUSTOM_LLM_API_TOKEN'):
                 backend.headers()
-            os.environ['GILDATA_API_TOKEN'] = 'internal-test-token'
+            os.environ['CUSTOM_LLM_API_TOKEN'] = 'internal-test-token'
             self.assertEqual(backend.headers()['Authorization'], 'Bearer internal-test-token')
 
     def test_probe_reports_unavailable_without_changing_model(self):
@@ -334,6 +344,9 @@ class DeepSeekTests(unittest.TestCase):
         (self.folder / "SKILL.md").write_text("按列抽取，不改原值", encoding="utf-8")
         sent = []
         def transport(request, timeout):
+            if '[source_preflight_v1]' in json.loads(request.data)['messages'][0]['content']:
+                return answer(message={'content':json.dumps({'decision':'has_relevant_data','reason':'真实夹具有GDP数值',
+                    'related_indicator_names':['GDP'],'evidence':['GDP | 0 | 亿元']})})
             sent.append(json.loads(request.data))
             if len(sent) in {1, 3}:
                 return answer(CODE.replace('row[0]', '"wrong"') if len(sent) == 1 else CODE)

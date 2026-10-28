@@ -26,6 +26,7 @@ class WorkbookRuleTests(unittest.TestCase):
             def close(self):pass
         self.book=Book()
         self.job={'rule_source':'workbook','excelrule_path':'rules.xlsx','rule_sheet':'Sheet1','rule_row':1197,
+                  'routing_reference_path':'nonexistent-routing-reference-fixture.xlsx',
                   'pageTitle':'来源\\统计信息','rule':{'指标名称示例':'旧快照'}}
 
     def read(self,**updates):

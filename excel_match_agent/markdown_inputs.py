@@ -47,7 +47,7 @@ def normalize_task(job, resolve):
     if len(ids) > 1:
         raise ValueError("Markdown MD5 别名冲突")
     if not ids:
-        raise ValueError("缺少 markdownMD5；禁止回退 fileMd5/parseFileMd5")
+        raise SourceDownloadError("缺少 markdownMD5；请检查DC上游正文转换字段映射，禁止回退原文件MD5",'MARKDOWN_MD5_MISSING')
     merged["markdownMD5"] = ids.pop()
     merged["upstream_metadata"] = upstream
     return merged
@@ -100,13 +100,66 @@ def acquire_markdown(job, resolve, folder):
         raw = resolve(job["markdown_path"]).read_bytes()
         origin = "local_markdown"
     else:
-        raw = fetch_bytes(url, job.get("download_timeout", 30))
+        try:
+            raw = fetch_bytes(url, job.get("download_timeout", 30))
+        except SourceDownloadError as exc:
+            raise SourceDownloadError('markdownMD5对应正文下载失败；请检查标识、权限及网络','MARKDOWN_DOWNLOAD_FAILED') from exc
         origin = "download"
-    text = decode_markdown(raw)
+    if not raw or not raw.strip():
+        raise SourceDownloadError('markdownMD5对应文件为空，没有有效正文','MARKDOWN_EMPTY')
+    try:
+        text = decode_markdown(raw)
+    except ValueError as exc:
+        raise SourceDownloadError(str(exc),'MARKDOWN_INVALID_CONTENT') from exc
     (folder / "source.md").write_text(text, encoding="utf-8")
     return text, {"origin": origin, "markdownMD5": md5, "url": url,
                   "bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest(),
                   "content_md5": hashlib.md5(raw).hexdigest()}
+
+
+def recover_exact_path_code(job, row, resolve):
+    """仅用同路径、名称规则一致的文本编码修复路由，不改写业务规则。"""
+    from openpyxl import load_workbook
+    from .excel_rule_input import normalize_page
+    path = (resolve(job['routing_reference_path']) if job.get('routing_reference_path') else
+            Path(__file__).resolve().parent/'完整excelrule表'/'EDB 代码映射迁移进展.xlsx')
+    if not path.is_file():
+        return None
+    book = load_workbook(path, read_only=True, data_only=True)
+    try:
+        sheet_name = job.get('routing_reference_sheet','HTML')
+        if sheet_name not in book.sheetnames:
+            return None
+        sheet = book[sheet_name]
+        sheet.reset_dimensions()
+        headers = None
+        matches = []
+        target = normalize_page(job.get('pageTitle') or row.get('路径'))
+        for number, values in enumerate(sheet.iter_rows(values_only=True),1):
+            if headers is None:
+                names = [str(v).strip() if v is not None else None for v in values]
+                if '路径' in names and '数据源路径代码' in names:
+                    headers = names
+                elif number >= 10:
+                    return None
+                continue
+            candidate = {h:v for h,v in zip(headers,values) if h}
+            if normalize_page(candidate.get('路径')) != target:
+                continue
+            def logic(value):
+                return value.get('指标名称取值逻辑',value.get('指标取值逻辑'))
+            fields = ((row.get('指标名称示例'),candidate.get('指标名称示例')),(logic(row),logic(candidate)))
+            if any(a not in (None,'') and str(a).strip() != str(b or '').strip() for a,b in fields):
+                continue
+            code = candidate.get('数据源路径代码')
+            if isinstance(code,str) and code.strip().isdigit():
+                matches.append((code.strip(),number))
+        if len({code for code,_ in matches}) != 1:
+            return None
+        return {'code':matches[0][0],'evidence':{'workbook':path.name,'sheet':sheet_name,
+                'rows':[n for _,n in matches],'basis':'同一路径和名称规则一致，读取精确文本编码；不推算旧数值末尾'}}
+    finally:
+        book.close()
 
 
 def rule_row(job, resolve):
@@ -177,6 +230,12 @@ def rule_row(job, resolve):
                 row['规则读取警告'] = warnings
             if overrides:
                 row['编码修复依据'] = job.get('rule_override_provenance', '任务配置提供的精确编码文本')
+            if not row.get('数据源路径代码'):
+                recovered = recover_exact_path_code(job,row,resolve)
+                if recovered:
+                    row['数据源路径代码'] = recovered['code']
+                    row['编码修复依据'] = recovered['evidence']
+                    row.setdefault('规则读取警告',[]).append('已从完整规则表核实并恢复精确文本路径代码，原表保持不变')
         return row
     finally:
         book.close()
@@ -186,7 +245,7 @@ def regex_rules(job, row, resolve):
     from openpyxl import load_workbook
     code = str(row.get("数据源路径代码", "")).strip()
     if not code:
-        raise ValueError("正则任务缺少数据源路径代码")
+        raise ValueError("正则任务缺少数据源路径代码；若旧表编码超过15位且为数值，需从同路径规则一致的文本来源核实，不能推算末尾数字")
     new = resolve(job.get("regex_path", "excelname拼接规则/任务汇总总表0911.xlsx"))
     old = resolve(job.get("legacy_regex_path", "excelname拼接规则/指标名称正则逻辑_分路径代码(2).xlsx"))
     found, result = False, []

@@ -79,11 +79,14 @@ def validate_rows(rows, strategy):
     return rows
 
 
-def validate_extraction(content):
+def validate_extraction(content, defer_output_validation=False):
     value = json_object(content)
     if set(value) != {"out_data"}:
         raise ValueError("提示词执行须返回唯一out_data列表字段")
-    validate_rows(value["out_data"], "prompt")
+    if not isinstance(value['out_data'], list):
+        raise ValueError('提示词执行out_data须为数组')
+    if not defer_output_validation:
+        validate_rows(value["out_data"], "prompt")
     return value
 
 
