@@ -1,4 +1,4 @@
-# EDB Match Agent
+# EDB-match-Agent
 
 **基于 DeepSeek 的经济指标解析与匹配 Agent：支持 Excel、HTML 与 Markdown Prompt，提供 CLI、HTTP 服务及 DC 工作流接入。**
 

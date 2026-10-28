@@ -10,6 +10,9 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = ["openpyxl>=3.1,<4"]
 
+[project.urls]
+Repository = "https://github.com/ealin2025123/EDB-match-Agent"
+
 [project.optional-dependencies]
 xls = ["xlrd>=2,<3"]
 dev = ["build>=1", "PyYAML>=6,<7"]
