@@ -215,6 +215,9 @@ def prepare_job(request, profile, task_dir):
 
 
 def approved_delivery(result):
+    if result.get('execution_mode') == 'trusted_library':
+        from .existing_parser import delivery
+        return delivery(result)
     strategy = result.get('parse_strategy', 'excel')
     # 既有Excel版本成功时仍保留历史production_ready=false；以成功状态、
     # 独立名称审核和真实平台验证为准，不把该旧展示字段当业务失败。
@@ -481,7 +484,7 @@ class TaskService:
                 frozen = folder/'request.json'
                 result = self.runner(frozen, folder/'agent-result.json')
                 response = approved_delivery(result)
-                if response.get('status') == 'ready':
+                if response.get('status') == 'ready' and result.get('execution_mode') != 'trusted_library':
                     try:
                         if not store_success(self.root/'code-cache', result):
                             response['cache_warning'] = '本次结果已通过，但代码库文件未保存；请检查资产来源和发布记录。'

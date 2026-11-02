@@ -1,5 +1,7 @@
 """对外错误说明白名单；不回传模型认证、运行配置或本机异常路径。"""
 ERRORS = {
+    'LOCAL_ASSET_AMBIGUOUS': ('同一路径找到多个内容不同的已有解析资产。', '请明确保留哪个版本；本次不会调用Agent生成或重建。', 'existing_asset_lookup'),
+    'LOCAL_ASSET_EXECUTION_FAILED': ('已有解析资产执行或匹配未通过。', '检查已有资产与当前源文件、GZK是否兼容；查看本机existing-error.json，本次未生成或重建。', 'execute_existing_asset'),
     'GZKJG_EMPTY': ('指标规则为空或无效：GZKJG为空。', '检查规则库查询与GZKJG字段映射后再发起新任务。', 'input_validation'),
     'GZKJG_INVALID': ('指标规则为空或无效：缺少有效指标名称或编码。', '修正规则库中的名称、编码及字段结构。', 'input_validation'),
     'INVALID_GZK': ('指标规则为空或无效：GZKJG格式不符合契约。', '检查GZKJG数组及名称、编码字段。', 'input_validation'),
