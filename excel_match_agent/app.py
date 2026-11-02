@@ -333,12 +333,7 @@ def audit_sources(rows, data):
             col = col * 26 + ord(letter) - 64
         try:
             raw = sheets[source["sheet"]][int(match[2]) - 1][col - 1]
-            raw_number = str(raw).replace(",", "").strip()
-            # 文本百分数保留原数值，仅将明确的百分号作为单位核对。
-            # 不把普通比例数乘100，也不从业务描述中猜测数值。
-            if raw_number.endswith(('%', '％')) and str(row.get('indicator_unit', '')).strip() in {'%', '％'}:
-                raw_number = raw_number[:-1].strip()
-            original = Decimal(raw_number)
+            original = Decimal(str(raw).replace(",", "").strip())
             extracted = Decimal(str(row.get("indicator_data")))
         except (IndexError, InvalidOperation, TypeError):
             raise ValueError(f"第{i}条来源不是可核对的数值单元格")
@@ -369,10 +364,6 @@ def match_evaluation(rows, rules, job):
 
 def run_job(job, job_base, backend=None, executor=None, docker=None, output_root=None, execution_backend=None):
     job = normalize_job(job)
-    from .existing_parser import run_if_present
-    existing = run_if_present(job, job_base, backend=backend, output_root=output_root)
-    if existing is not None:
-        return existing
     if backend is None and executor is None:
         from .supervisor import run_supervised
         return run_supervised(job, job_base, docker, output_root, execution_backend)
