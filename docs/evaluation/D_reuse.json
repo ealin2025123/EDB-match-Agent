@@ -1,0 +1,535 @@
+[
+  {
+    "case_id": "excel-simple-1",
+    "stage": "D_reuse",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 0,
+    "status": "skipped_dependency",
+    "error_type": "ValueError",
+    "message": "No generated asset",
+    "score": null,
+    "elapsed_seconds": 0.0,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "model_calls": 0,
+      "usage_missing": 0,
+      "request_records": 0,
+      "usage_complete": false
+    }
+  },
+  {
+    "case_id": "excel-simple-2",
+    "stage": "D_reuse",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 1,
+    "status": "ready",
+    "cache_mode": "same_input_warm_asset_replay_not_cross_period",
+    "rows": [
+      {
+        "indicator_name": "一般公共预算收入累计值",
+        "indicator_data": "428200",
+        "indicator_unit": "万元",
+        "end_date": "2026-07-31"
+      },
+      {
+        "indicator_name": "一般公共预算收入累计同比",
+        "indicator_data": "0",
+        "indicator_unit": "%",
+        "end_date": "2026-07-31"
+      }
+    ],
+    "score": {
+      "correct": 2,
+      "predicted": 2,
+      "expected": 2,
+      "precision": 1.0,
+      "coverage": 1.0,
+      "wrong_records": [],
+      "missing_records": [],
+      "gold_pass": true
+    },
+    "elapsed_seconds": 0.111,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "model_calls": 0,
+      "usage_missing": 0,
+      "request_records": 0,
+      "usage_complete": false
+    }
+  },
+  {
+    "case_id": "excel-medium-1",
+    "stage": "D_reuse",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 1,
+    "status": "failed",
+    "cache_mode": "same_input_warm_asset_replay_not_cross_period",
+    "error_type": "OutputCheckError",
+    "message": "源文件预审未判定无业务数据，但解析结果ExcelData为空。请依据真实源文件和本轮错误核对读取范围、工作表、表头和数值定位，重新生成完整代码。",
+    "score": {
+      "correct": 0,
+      "predicted": 0,
+      "expected": 2,
+      "precision": null,
+      "coverage": 0.0,
+      "wrong_records": [],
+      "missing_records": [
+        {
+          "indicator_code": "EVAL001",
+          "indicator_name": "一般公共预算收入累计值",
+          "indicator_data": "41.82",
+          "indicator_unit": "亿元",
+          "end_date": "2026-06-30"
+        },
+        {
+          "indicator_code": "EVAL002",
+          "indicator_name": "一般公共预算收入累计同比",
+          "indicator_data": "-1",
+          "indicator_unit": "%",
+          "end_date": "2026-06-30"
+        }
+      ],
+      "gold_pass": false
+    },
+    "elapsed_seconds": 0.123,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "model_calls": 0,
+      "usage_missing": 0,
+      "request_records": 0,
+      "usage_complete": false
+    }
+  },
+  {
+    "case_id": "excel-medium-2",
+    "stage": "D_reuse",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 1,
+    "status": "ready",
+    "cache_mode": "same_input_warm_asset_replay_not_cross_period",
+    "rows": [
+      {
+        "indicator_name": "一般公共预算收入累计值",
+        "indicator_data": "428200",
+        "indicator_unit": "万元",
+        "end_date": "2026-07-31"
+      },
+      {
+        "indicator_name": "一般公共预算收入累计同比",
+        "indicator_data": "0",
+        "indicator_unit": "%",
+        "end_date": "2026-07-31"
+      }
+    ],
+    "score": {
+      "correct": 2,
+      "predicted": 2,
+      "expected": 2,
+      "precision": 1.0,
+      "coverage": 1.0,
+      "wrong_records": [],
+      "missing_records": [],
+      "gold_pass": true
+    },
+    "elapsed_seconds": 0.111,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "model_calls": 0,
+      "usage_missing": 0,
+      "request_records": 0,
+      "usage_complete": false
+    }
+  },
+  {
+    "case_id": "excel-complex-1",
+    "stage": "D_reuse",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 0,
+    "status": "skipped_dependency",
+    "error_type": "ValueError",
+    "message": "No generated asset",
+    "score": null,
+    "elapsed_seconds": 0.0,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "model_calls": 0,
+      "usage_missing": 0,
+      "request_records": 0,
+      "usage_complete": false
+    }
+  },
+  {
+    "case_id": "excel-complex-2",
+    "stage": "D_reuse",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 1,
+    "status": "ready",
+    "cache_mode": "same_input_warm_asset_replay_not_cross_period",
+    "rows": [
+      {
+        "indicator_name": "一般公共预算收入累计值",
+        "indicator_data": "428200",
+        "indicator_unit": "万元",
+        "end_date": "2026-07-31"
+      },
+      {
+        "indicator_name": "一般公共预算收入累计同比",
+        "indicator_data": "0",
+        "indicator_unit": "%",
+        "end_date": "2026-07-31"
+      }
+    ],
+    "score": {
+      "correct": 2,
+      "predicted": 2,
+      "expected": 2,
+      "precision": 1.0,
+      "coverage": 1.0,
+      "wrong_records": [],
+      "missing_records": [],
+      "gold_pass": true
+    },
+    "elapsed_seconds": 0.11,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "model_calls": 0,
+      "usage_missing": 0,
+      "request_records": 0,
+      "usage_complete": false
+    }
+  },
+  {
+    "case_id": "html-simple-1",
+    "stage": "D_reuse",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 0,
+    "status": "skipped_dependency",
+    "error_type": "ValueError",
+    "message": "No generated asset",
+    "score": null,
+    "elapsed_seconds": 0.0,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "model_calls": 0,
+      "usage_missing": 0,
+      "request_records": 0,
+      "usage_complete": false
+    }
+  },
+  {
+    "case_id": "html-simple-2",
+    "stage": "D_reuse",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 0,
+    "status": "skipped_dependency",
+    "error_type": "ValueError",
+    "message": "No generated asset",
+    "score": null,
+    "elapsed_seconds": 0.0,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "model_calls": 0,
+      "usage_missing": 0,
+      "request_records": 0,
+      "usage_complete": false
+    }
+  },
+  {
+    "case_id": "html-medium-1",
+    "stage": "D_reuse",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 0,
+    "status": "skipped_dependency",
+    "error_type": "ValueError",
+    "message": "No generated asset",
+    "score": null,
+    "elapsed_seconds": 0.0,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "model_calls": 0,
+      "usage_missing": 0,
+      "request_records": 0,
+      "usage_complete": false
+    }
+  },
+  {
+    "case_id": "html-medium-2",
+    "stage": "D_reuse",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 0,
+    "status": "skipped_dependency",
+    "error_type": "ValueError",
+    "message": "No generated asset",
+    "score": null,
+    "elapsed_seconds": 0.0,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "model_calls": 0,
+      "usage_missing": 0,
+      "request_records": 0,
+      "usage_complete": false
+    }
+  },
+  {
+    "case_id": "html-complex-1",
+    "stage": "D_reuse",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 1,
+    "status": "ready",
+    "cache_mode": "same_input_warm_asset_replay_not_cross_period",
+    "rows": [
+      {
+        "indicator_name": "一般公共预算收入累计值",
+        "indicator_data": "41.82",
+        "indicator_unit": "亿元",
+        "end_date": "2026-06-30"
+      },
+      {
+        "indicator_name": "一般公共预算收入累计同比",
+        "indicator_data": "-1",
+        "indicator_unit": "%",
+        "end_date": "2026-06-30"
+      }
+    ],
+    "score": {
+      "correct": 2,
+      "predicted": 2,
+      "expected": 2,
+      "precision": 1.0,
+      "coverage": 1.0,
+      "wrong_records": [],
+      "missing_records": [],
+      "gold_pass": true
+    },
+    "elapsed_seconds": 0.134,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "model_calls": 0,
+      "usage_missing": 0,
+      "request_records": 0,
+      "usage_complete": false
+    }
+  },
+  {
+    "case_id": "html-complex-2",
+    "stage": "D_reuse",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 0,
+    "status": "skipped_dependency",
+    "error_type": "ValueError",
+    "message": "No generated asset",
+    "score": null,
+    "elapsed_seconds": 0.0,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "model_calls": 0,
+      "usage_missing": 0,
+      "request_records": 0,
+      "usage_complete": false
+    }
+  },
+  {
+    "case_id": "prompt-simple-1",
+    "stage": "D_reuse",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 0,
+    "status": "skipped_dependency",
+    "error_type": "ValueError",
+    "message": "No generated asset",
+    "score": null,
+    "elapsed_seconds": 0.0,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "model_calls": 0,
+      "usage_missing": 0,
+      "request_records": 0,
+      "usage_complete": false
+    }
+  },
+  {
+    "case_id": "prompt-simple-2",
+    "stage": "D_reuse",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 0,
+    "status": "skipped_dependency",
+    "error_type": "ValueError",
+    "message": "No generated asset",
+    "score": null,
+    "elapsed_seconds": 0.0,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "model_calls": 0,
+      "usage_missing": 0,
+      "request_records": 0,
+      "usage_complete": false
+    }
+  },
+  {
+    "case_id": "prompt-medium-1",
+    "stage": "D_reuse",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 0,
+    "status": "failed",
+    "error_type": "KeyError",
+    "message": "'ExcelData'",
+    "score": {
+      "correct": 0,
+      "predicted": 0,
+      "expected": 2,
+      "precision": null,
+      "coverage": 0.0,
+      "wrong_records": [],
+      "missing_records": [
+        {
+          "indicator_code": "EVAL001",
+          "indicator_name": "一般公共预算收入累计值",
+          "indicator_data": "41.82",
+          "indicator_unit": "亿元",
+          "end_date": "2026-06-30"
+        },
+        {
+          "indicator_code": "EVAL002",
+          "indicator_name": "一般公共预算收入累计同比",
+          "indicator_data": "-1",
+          "indicator_unit": "%",
+          "end_date": "2026-06-30"
+        }
+      ],
+      "gold_pass": false
+    },
+    "elapsed_seconds": 3.195,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 3690,
+      "completion_tokens": 363,
+      "total_tokens": 4053,
+      "model_calls": 1,
+      "usage_missing": 0,
+      "request_records": 1,
+      "usage_complete": true
+    }
+  },
+  {
+    "case_id": "prompt-medium-2",
+    "stage": "D_reuse",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 0,
+    "status": "skipped_dependency",
+    "error_type": "ValueError",
+    "message": "No generated asset",
+    "score": null,
+    "elapsed_seconds": 0.0,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "model_calls": 0,
+      "usage_missing": 0,
+      "request_records": 0,
+      "usage_complete": false
+    }
+  },
+  {
+    "case_id": "prompt-complex-1",
+    "stage": "D_reuse",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 0,
+    "status": "skipped_dependency",
+    "error_type": "ValueError",
+    "message": "No generated asset",
+    "score": null,
+    "elapsed_seconds": 0.0,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "model_calls": 0,
+      "usage_missing": 0,
+      "request_records": 0,
+      "usage_complete": false
+    }
+  },
+  {
+    "case_id": "prompt-complex-2",
+    "stage": "D_reuse",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 0,
+    "status": "skipped_dependency",
+    "error_type": "ValueError",
+    "message": "No generated asset",
+    "score": null,
+    "elapsed_seconds": 0.0,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "model_calls": 0,
+      "usage_missing": 0,
+      "request_records": 0,
+      "usage_complete": false
+    }
+  }
+]

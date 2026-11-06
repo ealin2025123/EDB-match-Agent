@@ -1,0 +1,1374 @@
+[
+  {
+    "case": {
+      "id": "excel-simple-1",
+      "strategy": "excel",
+      "complexity": "simple",
+      "split": "development",
+      "path_group": "excel-simple",
+      "source": "cases\\excel-simple-1\\source.xlsx",
+      "source_sha256": "97f92d9171009fada30a5e8883549853c4d2a92ebdfa46496d2f75411f746879",
+      "title": "2026年1—6月财政数据",
+      "publictime": "2026-07-15",
+      "rules": [
+        {
+          "rule_indicator_code": "EVAL001",
+          "rule_indicator_name": "一般公共预算收入累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL002",
+          "rule_indicator_name": "一般公共预算收入累计同比",
+          "rule_constant_name": "%",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL003",
+          "rule_indicator_name": "一般公共预算支出累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        }
+      ],
+      "gold": [
+        {
+          "indicator_code": "EVAL001",
+          "indicator_name": "一般公共预算收入累计值",
+          "indicator_data": "41.82",
+          "indicator_unit": "亿元",
+          "end_date": "2026-06-30"
+        },
+        {
+          "indicator_code": "EVAL002",
+          "indicator_name": "一般公共预算收入累计同比",
+          "indicator_data": "-1",
+          "indicator_unit": "%",
+          "end_date": "2026-06-30"
+        }
+      ],
+      "provenance": "synthetic_constructed",
+      "gold_status": "ai_expert_reviewed_not_human_signed",
+      "evidence": {
+        "location": "财政表中一般公共预算收入行，累计值与累计同比列",
+        "period": "2026年1—6月财政数据"
+      },
+      "expected_action": "extract",
+      "gold_review": {
+        "reviewer": "Codex AI",
+        "date": "2026-11-06",
+        "decision": "accepted",
+        "basis": "逐一核对实际源表/正文的收入行、累计/同比列、源单位及标题统计期间；支出未公布不进入Gold。单位允许等价换算。"
+      }
+    },
+    "actual_source_context": {
+      "sheets": [
+        {
+          "name": "财政",
+          "rows": [
+            [
+              "2026年1—6月财政数据",
+              null,
+              null,
+              null
+            ],
+            [
+              "指标",
+              "单位",
+              "累计值",
+              "累计同比（%）"
+            ],
+            [
+              "一般公共预算收入",
+              "亿元",
+              "41.82",
+              "-1"
+            ]
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "case": {
+      "id": "excel-simple-2",
+      "strategy": "excel",
+      "complexity": "simple",
+      "split": "development",
+      "path_group": "excel-simple",
+      "source": "cases\\excel-simple-2\\source.xlsx",
+      "source_sha256": "f45fc3c701a6fe164563328f33f6eaa5a29eaa1ccc5c61d50dd0469d279d91ff",
+      "title": "2026年1—7月财政数据",
+      "publictime": "2026-08-15",
+      "rules": [
+        {
+          "rule_indicator_code": "EVAL001",
+          "rule_indicator_name": "一般公共预算收入累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL002",
+          "rule_indicator_name": "一般公共预算收入累计同比",
+          "rule_constant_name": "%",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL003",
+          "rule_indicator_name": "一般公共预算支出累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        }
+      ],
+      "gold": [
+        {
+          "indicator_code": "EVAL001",
+          "indicator_name": "一般公共预算收入累计值",
+          "indicator_data": "42.82",
+          "indicator_unit": "亿元",
+          "end_date": "2026-07-31"
+        },
+        {
+          "indicator_code": "EVAL002",
+          "indicator_name": "一般公共预算收入累计同比",
+          "indicator_data": "0",
+          "indicator_unit": "%",
+          "end_date": "2026-07-31"
+        }
+      ],
+      "provenance": "synthetic_constructed",
+      "gold_status": "ai_expert_reviewed_not_human_signed",
+      "evidence": {
+        "location": "财政表中一般公共预算收入行，累计值与累计同比列",
+        "period": "2026年1—7月财政数据"
+      },
+      "expected_action": "extract",
+      "gold_review": {
+        "reviewer": "Codex AI",
+        "date": "2026-11-06",
+        "decision": "accepted",
+        "basis": "逐一核对实际源表/正文的收入行、累计/同比列、源单位及标题统计期间；支出未公布不进入Gold。单位允许等价换算。"
+      }
+    },
+    "actual_source_context": {
+      "sheets": [
+        {
+          "name": "财政",
+          "rows": [
+            [
+              "2026年1—7月财政数据",
+              null,
+              null,
+              null
+            ],
+            [
+              "指标",
+              "单位",
+              "累计值",
+              "累计同比（%）"
+            ],
+            [
+              "一般公共预算收入",
+              "亿元",
+              "42.82",
+              "0"
+            ]
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "case": {
+      "id": "excel-medium-1",
+      "strategy": "excel",
+      "complexity": "medium",
+      "split": "development",
+      "path_group": "excel-medium",
+      "source": "cases\\excel-medium-1\\source.xlsx",
+      "source_sha256": "2bc584c29c9e142a0534165ac34fe95d2fb49c3beb8e3b3c8618f203883cbeab",
+      "title": "2026年1—6月财政数据",
+      "publictime": "2026-07-15",
+      "rules": [
+        {
+          "rule_indicator_code": "EVAL001",
+          "rule_indicator_name": "一般公共预算收入累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL002",
+          "rule_indicator_name": "一般公共预算收入累计同比",
+          "rule_constant_name": "%",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL003",
+          "rule_indicator_name": "一般公共预算支出累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        }
+      ],
+      "gold": [
+        {
+          "indicator_code": "EVAL001",
+          "indicator_name": "一般公共预算收入累计值",
+          "indicator_data": "41.82",
+          "indicator_unit": "亿元",
+          "end_date": "2026-06-30"
+        },
+        {
+          "indicator_code": "EVAL002",
+          "indicator_name": "一般公共预算收入累计同比",
+          "indicator_data": "-1",
+          "indicator_unit": "%",
+          "end_date": "2026-06-30"
+        }
+      ],
+      "provenance": "synthetic_constructed",
+      "gold_status": "ai_expert_reviewed_not_human_signed",
+      "evidence": {
+        "location": "财政表中一般公共预算收入行，累计值与累计同比列",
+        "period": "2026年1—6月财政数据"
+      },
+      "expected_action": "extract",
+      "gold_review": {
+        "reviewer": "Codex AI",
+        "date": "2026-11-06",
+        "decision": "accepted",
+        "basis": "逐一核对实际源表/正文的收入行、累计/同比列、源单位及标题统计期间；支出未公布不进入Gold。单位允许等价换算。"
+      }
+    },
+    "actual_source_context": {
+      "sheets": [
+        {
+          "name": "财政",
+          "rows": [
+            [
+              "2026年1—6月财政数据",
+              null,
+              null,
+              null
+            ],
+            [
+              "财政收支",
+              null,
+              null,
+              null
+            ],
+            [
+              "指标",
+              "单位",
+              "累计值",
+              "累计同比（%）"
+            ],
+            [
+              "一般公共预算收入",
+              "亿元",
+              "41.82",
+              "-1"
+            ]
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "case": {
+      "id": "excel-medium-2",
+      "strategy": "excel",
+      "complexity": "medium",
+      "split": "development",
+      "path_group": "excel-medium",
+      "source": "cases\\excel-medium-2\\source.xlsx",
+      "source_sha256": "1544293594d09a38b9eb16f5fd75fb988754d22989c50ad9e9a5064184c95ec3",
+      "title": "2026年1—7月财政数据",
+      "publictime": "2026-08-15",
+      "rules": [
+        {
+          "rule_indicator_code": "EVAL001",
+          "rule_indicator_name": "一般公共预算收入累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL002",
+          "rule_indicator_name": "一般公共预算收入累计同比",
+          "rule_constant_name": "%",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL003",
+          "rule_indicator_name": "一般公共预算支出累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        }
+      ],
+      "gold": [
+        {
+          "indicator_code": "EVAL001",
+          "indicator_name": "一般公共预算收入累计值",
+          "indicator_data": "42.82",
+          "indicator_unit": "亿元",
+          "end_date": "2026-07-31"
+        },
+        {
+          "indicator_code": "EVAL002",
+          "indicator_name": "一般公共预算收入累计同比",
+          "indicator_data": "0",
+          "indicator_unit": "%",
+          "end_date": "2026-07-31"
+        }
+      ],
+      "provenance": "synthetic_constructed",
+      "gold_status": "ai_expert_reviewed_not_human_signed",
+      "evidence": {
+        "location": "财政表中一般公共预算收入行，累计值与累计同比列",
+        "period": "2026年1—7月财政数据"
+      },
+      "expected_action": "extract",
+      "gold_review": {
+        "reviewer": "Codex AI",
+        "date": "2026-11-06",
+        "decision": "accepted",
+        "basis": "逐一核对实际源表/正文的收入行、累计/同比列、源单位及标题统计期间；支出未公布不进入Gold。单位允许等价换算。"
+      }
+    },
+    "actual_source_context": {
+      "sheets": [
+        {
+          "name": "财政",
+          "rows": [
+            [
+              "2026年1—7月财政数据",
+              null,
+              null,
+              null
+            ],
+            [
+              "财政收支",
+              null,
+              null,
+              null
+            ],
+            [
+              "指标",
+              "单位",
+              "累计值",
+              "累计同比（%）"
+            ],
+            [
+              "一般公共预算收入",
+              "亿元",
+              "42.82",
+              "0"
+            ]
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "case": {
+      "id": "excel-complex-1",
+      "strategy": "excel",
+      "complexity": "complex",
+      "split": "holdout",
+      "path_group": "excel-complex",
+      "source": "cases\\excel-complex-1\\source.xlsx",
+      "source_sha256": "3115573fff85b37504a7dde62481f795e3e62360785e8751a8a3e24fbff78eb2",
+      "title": "2026年1—6月财政数据",
+      "publictime": "2026-07-15",
+      "rules": [
+        {
+          "rule_indicator_code": "EVAL001",
+          "rule_indicator_name": "一般公共预算收入累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL002",
+          "rule_indicator_name": "一般公共预算收入累计同比",
+          "rule_constant_name": "%",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL003",
+          "rule_indicator_name": "一般公共预算支出累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        }
+      ],
+      "gold": [
+        {
+          "indicator_code": "EVAL001",
+          "indicator_name": "一般公共预算收入累计值",
+          "indicator_data": "41.82",
+          "indicator_unit": "亿元",
+          "end_date": "2026-06-30"
+        },
+        {
+          "indicator_code": "EVAL002",
+          "indicator_name": "一般公共预算收入累计同比",
+          "indicator_data": "-1",
+          "indicator_unit": "%",
+          "end_date": "2026-06-30"
+        }
+      ],
+      "provenance": "synthetic_constructed",
+      "gold_status": "ai_expert_reviewed_not_human_signed",
+      "evidence": {
+        "location": "财政表中一般公共预算收入行，累计值与累计同比列",
+        "period": "2026年1—6月财政数据"
+      },
+      "expected_action": "extract",
+      "gold_review": {
+        "reviewer": "Codex AI",
+        "date": "2026-11-06",
+        "decision": "accepted",
+        "basis": "逐一核对实际源表/正文的收入行、累计/同比列、源单位及标题统计期间；支出未公布不进入Gold。单位允许等价换算。"
+      }
+    },
+    "actual_source_context": {
+      "sheets": [
+        {
+          "name": "财政",
+          "rows": [
+            [
+              "2026年1—6月财政数据",
+              null,
+              null,
+              null
+            ],
+            [
+              "财政收支",
+              null,
+              null,
+              null
+            ],
+            [
+              "指标",
+              "单位",
+              "累计值",
+              "累计同比（%）"
+            ],
+            [
+              "一般公共预算收入",
+              "亿元",
+              "41.82",
+              "-1"
+            ],
+            [
+              "一般公共预算支出",
+              "亿元",
+              "—",
+              "—"
+            ]
+          ]
+        },
+        {
+          "name": "上年同期",
+          "rows": [
+            [
+              "2025年同期",
+              null,
+              null,
+              null
+            ],
+            [
+              "指标",
+              "单位",
+              "累计值",
+              "累计同比（%）"
+            ],
+            [
+              "一般公共预算收入",
+              "亿元",
+              99,
+              9
+            ]
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "case": {
+      "id": "excel-complex-2",
+      "strategy": "excel",
+      "complexity": "complex",
+      "split": "holdout",
+      "path_group": "excel-complex",
+      "source": "cases\\excel-complex-2\\source.xlsx",
+      "source_sha256": "b6ed77d2b0e39dbb9470dca40da4e6ce2a9cf592f2085dd4b7e66e48668d506c",
+      "title": "2026年1—7月财政数据",
+      "publictime": "2026-08-15",
+      "rules": [
+        {
+          "rule_indicator_code": "EVAL001",
+          "rule_indicator_name": "一般公共预算收入累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL002",
+          "rule_indicator_name": "一般公共预算收入累计同比",
+          "rule_constant_name": "%",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL003",
+          "rule_indicator_name": "一般公共预算支出累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        }
+      ],
+      "gold": [
+        {
+          "indicator_code": "EVAL001",
+          "indicator_name": "一般公共预算收入累计值",
+          "indicator_data": "42.82",
+          "indicator_unit": "亿元",
+          "end_date": "2026-07-31"
+        },
+        {
+          "indicator_code": "EVAL002",
+          "indicator_name": "一般公共预算收入累计同比",
+          "indicator_data": "0",
+          "indicator_unit": "%",
+          "end_date": "2026-07-31"
+        }
+      ],
+      "provenance": "synthetic_constructed",
+      "gold_status": "ai_expert_reviewed_not_human_signed",
+      "evidence": {
+        "location": "财政表中一般公共预算收入行，累计值与累计同比列",
+        "period": "2026年1—7月财政数据"
+      },
+      "expected_action": "extract",
+      "gold_review": {
+        "reviewer": "Codex AI",
+        "date": "2026-11-06",
+        "decision": "accepted",
+        "basis": "逐一核对实际源表/正文的收入行、累计/同比列、源单位及标题统计期间；支出未公布不进入Gold。单位允许等价换算。"
+      }
+    },
+    "actual_source_context": {
+      "sheets": [
+        {
+          "name": "财政",
+          "rows": [
+            [
+              "2026年1—7月财政数据",
+              null,
+              null,
+              null
+            ],
+            [
+              "财政收支",
+              null,
+              null,
+              null
+            ],
+            [
+              "指标",
+              "单位",
+              "累计值",
+              "累计同比（%）"
+            ],
+            [
+              "一般公共预算收入",
+              "亿元",
+              "42.82",
+              "0"
+            ],
+            [
+              "一般公共预算支出",
+              "亿元",
+              "—",
+              "—"
+            ]
+          ]
+        },
+        {
+          "name": "上年同期",
+          "rows": [
+            [
+              "2025年同期",
+              null,
+              null,
+              null
+            ],
+            [
+              "指标",
+              "单位",
+              "累计值",
+              "累计同比（%）"
+            ],
+            [
+              "一般公共预算收入",
+              "亿元",
+              99,
+              9
+            ]
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "case": {
+      "id": "html-simple-1",
+      "strategy": "html",
+      "complexity": "simple",
+      "split": "development",
+      "path_group": "html-simple",
+      "source": "cases\\html-simple-1\\source.html",
+      "source_sha256": "3a9e37058c598c703c33de2428661d274b87020a0658e6630cb53a06565c8086",
+      "title": "2026年1—6月财政数据",
+      "publictime": "2026-07-15",
+      "rules": [
+        {
+          "rule_indicator_code": "EVAL001",
+          "rule_indicator_name": "一般公共预算收入累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL002",
+          "rule_indicator_name": "一般公共预算收入累计同比",
+          "rule_constant_name": "%",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL003",
+          "rule_indicator_name": "一般公共预算支出累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        }
+      ],
+      "gold": [
+        {
+          "indicator_code": "EVAL001",
+          "indicator_name": "一般公共预算收入累计值",
+          "indicator_data": "41.82",
+          "indicator_unit": "亿元",
+          "end_date": "2026-06-30"
+        },
+        {
+          "indicator_code": "EVAL002",
+          "indicator_name": "一般公共预算收入累计同比",
+          "indicator_data": "-1",
+          "indicator_unit": "%",
+          "end_date": "2026-06-30"
+        }
+      ],
+      "provenance": "synthetic_constructed",
+      "gold_status": "ai_expert_reviewed_not_human_signed",
+      "evidence": {
+        "location": "财政表中一般公共预算收入行，累计值与累计同比列",
+        "period": "2026年1—6月财政数据"
+      },
+      "expected_action": "extract",
+      "gold_review": {
+        "reviewer": "Codex AI",
+        "date": "2026-11-06",
+        "decision": "accepted",
+        "basis": "逐一核对实际源表/正文的收入行、累计/同比列、源单位及标题统计期间；支出未公布不进入Gold。单位允许等价换算。"
+      }
+    },
+    "actual_source_context": "<h1>2026年1—6月财政数据</h1><table><tr><th>指标</th><th>单位</th><th>累计值</th><th>累计同比（%）</th></tr><tr><td>一般公共预算收入</td><td>亿元</td><td>41.82</td><td>-1</td></tr></table>"
+  },
+  {
+    "case": {
+      "id": "html-simple-2",
+      "strategy": "html",
+      "complexity": "simple",
+      "split": "development",
+      "path_group": "html-simple",
+      "source": "cases\\html-simple-2\\source.html",
+      "source_sha256": "09de60abfb92991d0be82ef5f3c3c21708b9c9f6400b5cf4772dbc8859011c92",
+      "title": "2026年1—7月财政数据",
+      "publictime": "2026-08-15",
+      "rules": [
+        {
+          "rule_indicator_code": "EVAL001",
+          "rule_indicator_name": "一般公共预算收入累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL002",
+          "rule_indicator_name": "一般公共预算收入累计同比",
+          "rule_constant_name": "%",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL003",
+          "rule_indicator_name": "一般公共预算支出累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        }
+      ],
+      "gold": [
+        {
+          "indicator_code": "EVAL001",
+          "indicator_name": "一般公共预算收入累计值",
+          "indicator_data": "42.82",
+          "indicator_unit": "亿元",
+          "end_date": "2026-07-31"
+        },
+        {
+          "indicator_code": "EVAL002",
+          "indicator_name": "一般公共预算收入累计同比",
+          "indicator_data": "0",
+          "indicator_unit": "%",
+          "end_date": "2026-07-31"
+        }
+      ],
+      "provenance": "synthetic_constructed",
+      "gold_status": "ai_expert_reviewed_not_human_signed",
+      "evidence": {
+        "location": "财政表中一般公共预算收入行，累计值与累计同比列",
+        "period": "2026年1—7月财政数据"
+      },
+      "expected_action": "extract",
+      "gold_review": {
+        "reviewer": "Codex AI",
+        "date": "2026-11-06",
+        "decision": "accepted",
+        "basis": "逐一核对实际源表/正文的收入行、累计/同比列、源单位及标题统计期间；支出未公布不进入Gold。单位允许等价换算。"
+      }
+    },
+    "actual_source_context": "<h1>2026年1—7月财政数据</h1><table><tr><th>指标</th><th>单位</th><th>累计值</th><th>累计同比（%）</th></tr><tr><td>一般公共预算收入</td><td>亿元</td><td>42.82</td><td>0</td></tr></table>"
+  },
+  {
+    "case": {
+      "id": "html-medium-1",
+      "strategy": "html",
+      "complexity": "medium",
+      "split": "development",
+      "path_group": "html-medium",
+      "source": "cases\\html-medium-1\\source.html",
+      "source_sha256": "6c06283c1ae26287655addb8ef3a3807b2bd205db86c0371a6c21691ecbf1537",
+      "title": "2026年1—6月财政数据",
+      "publictime": "2026-07-15",
+      "rules": [
+        {
+          "rule_indicator_code": "EVAL001",
+          "rule_indicator_name": "一般公共预算收入累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL002",
+          "rule_indicator_name": "一般公共预算收入累计同比",
+          "rule_constant_name": "%",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL003",
+          "rule_indicator_name": "一般公共预算支出累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        }
+      ],
+      "gold": [
+        {
+          "indicator_code": "EVAL001",
+          "indicator_name": "一般公共预算收入累计值",
+          "indicator_data": "41.82",
+          "indicator_unit": "亿元",
+          "end_date": "2026-06-30"
+        },
+        {
+          "indicator_code": "EVAL002",
+          "indicator_name": "一般公共预算收入累计同比",
+          "indicator_data": "-1",
+          "indicator_unit": "%",
+          "end_date": "2026-06-30"
+        }
+      ],
+      "provenance": "synthetic_constructed",
+      "gold_status": "ai_expert_reviewed_not_human_signed",
+      "evidence": {
+        "location": "财政表中一般公共预算收入行，累计值与累计同比列",
+        "period": "2026年1—6月财政数据"
+      },
+      "expected_action": "extract",
+      "gold_review": {
+        "reviewer": "Codex AI",
+        "date": "2026-11-06",
+        "decision": "accepted",
+        "basis": "逐一核对实际源表/正文的收入行、累计/同比列、源单位及标题统计期间；支出未公布不进入Gold。单位允许等价换算。"
+      }
+    },
+    "actual_source_context": "<h1>2026年1—6月财政数据</h1><table><tr><th>指标</th><th>单位</th><th>累计值</th><th>累计同比（%）</th></tr><tr><td>一般公共预算收入</td><td>亿元</td><td>41.82</td><td>-1</td></tr></table><p>一般公共预算收入 | 亿元 | 41.82 | -1</p>"
+  },
+  {
+    "case": {
+      "id": "html-medium-2",
+      "strategy": "html",
+      "complexity": "medium",
+      "split": "development",
+      "path_group": "html-medium",
+      "source": "cases\\html-medium-2\\source.html",
+      "source_sha256": "3b49ea6866b38e218e5029a395810bf244750cb1607ed1a9dfb7509d30726ca5",
+      "title": "2026年1—7月财政数据",
+      "publictime": "2026-08-15",
+      "rules": [
+        {
+          "rule_indicator_code": "EVAL001",
+          "rule_indicator_name": "一般公共预算收入累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL002",
+          "rule_indicator_name": "一般公共预算收入累计同比",
+          "rule_constant_name": "%",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL003",
+          "rule_indicator_name": "一般公共预算支出累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        }
+      ],
+      "gold": [
+        {
+          "indicator_code": "EVAL001",
+          "indicator_name": "一般公共预算收入累计值",
+          "indicator_data": "42.82",
+          "indicator_unit": "亿元",
+          "end_date": "2026-07-31"
+        },
+        {
+          "indicator_code": "EVAL002",
+          "indicator_name": "一般公共预算收入累计同比",
+          "indicator_data": "0",
+          "indicator_unit": "%",
+          "end_date": "2026-07-31"
+        }
+      ],
+      "provenance": "synthetic_constructed",
+      "gold_status": "ai_expert_reviewed_not_human_signed",
+      "evidence": {
+        "location": "财政表中一般公共预算收入行，累计值与累计同比列",
+        "period": "2026年1—7月财政数据"
+      },
+      "expected_action": "extract",
+      "gold_review": {
+        "reviewer": "Codex AI",
+        "date": "2026-11-06",
+        "decision": "accepted",
+        "basis": "逐一核对实际源表/正文的收入行、累计/同比列、源单位及标题统计期间；支出未公布不进入Gold。单位允许等价换算。"
+      }
+    },
+    "actual_source_context": "<h1>2026年1—7月财政数据</h1><table><tr><th>指标</th><th>单位</th><th>累计值</th><th>累计同比（%）</th></tr><tr><td>一般公共预算收入</td><td>亿元</td><td>42.82</td><td>0</td></tr></table><p>一般公共预算收入 | 亿元 | 42.82 | 0</p>"
+  },
+  {
+    "case": {
+      "id": "html-complex-1",
+      "strategy": "html",
+      "complexity": "complex",
+      "split": "holdout",
+      "path_group": "html-complex",
+      "source": "cases\\html-complex-1\\source.html",
+      "source_sha256": "e437cdb49189d6a8b16217ff0868ddb0c4f41040ff5084b4bbec3260ce004fc4",
+      "title": "2026年1—6月财政数据",
+      "publictime": "2026-07-15",
+      "rules": [
+        {
+          "rule_indicator_code": "EVAL001",
+          "rule_indicator_name": "一般公共预算收入累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL002",
+          "rule_indicator_name": "一般公共预算收入累计同比",
+          "rule_constant_name": "%",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL003",
+          "rule_indicator_name": "一般公共预算支出累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        }
+      ],
+      "gold": [
+        {
+          "indicator_code": "EVAL001",
+          "indicator_name": "一般公共预算收入累计值",
+          "indicator_data": "41.82",
+          "indicator_unit": "亿元",
+          "end_date": "2026-06-30"
+        },
+        {
+          "indicator_code": "EVAL002",
+          "indicator_name": "一般公共预算收入累计同比",
+          "indicator_data": "-1",
+          "indicator_unit": "%",
+          "end_date": "2026-06-30"
+        }
+      ],
+      "provenance": "synthetic_constructed",
+      "gold_status": "ai_expert_reviewed_not_human_signed",
+      "evidence": {
+        "location": "财政表中一般公共预算收入行，累计值与累计同比列",
+        "period": "2026年1—6月财政数据"
+      },
+      "expected_action": "extract",
+      "gold_review": {
+        "reviewer": "Codex AI",
+        "date": "2026-11-06",
+        "decision": "accepted",
+        "basis": "逐一核对实际源表/正文的收入行、累计/同比列、源单位及标题统计期间；支出未公布不进入Gold。单位允许等价换算。"
+      }
+    },
+    "actual_source_context": "<h1>2026年1—6月财政数据</h1><table><tr><th>指标</th><th>单位</th><th>累计值</th><th>累计同比（%）</th></tr><tr><td>一般公共预算收入</td><td>亿元</td><td>41.82</td><td>-1</td></tr></table><p>2025年同期数据仅供比较，不属于本次统计期间。</p><p>一般公共预算支出：未公布；不得补零。</p><p>其他业务：工业产值 99 万元，不属于本次目标。</p>"
+  },
+  {
+    "case": {
+      "id": "html-complex-2",
+      "strategy": "html",
+      "complexity": "complex",
+      "split": "holdout",
+      "path_group": "html-complex",
+      "source": "cases\\html-complex-2\\source.html",
+      "source_sha256": "31a23fe4ab37e4c33aa416a1d83f9a9b83e3d21a6247480a2d68641efb0785e5",
+      "title": "2026年1—7月财政数据",
+      "publictime": "2026-08-15",
+      "rules": [
+        {
+          "rule_indicator_code": "EVAL001",
+          "rule_indicator_name": "一般公共预算收入累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL002",
+          "rule_indicator_name": "一般公共预算收入累计同比",
+          "rule_constant_name": "%",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL003",
+          "rule_indicator_name": "一般公共预算支出累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        }
+      ],
+      "gold": [
+        {
+          "indicator_code": "EVAL001",
+          "indicator_name": "一般公共预算收入累计值",
+          "indicator_data": "42.82",
+          "indicator_unit": "亿元",
+          "end_date": "2026-07-31"
+        },
+        {
+          "indicator_code": "EVAL002",
+          "indicator_name": "一般公共预算收入累计同比",
+          "indicator_data": "0",
+          "indicator_unit": "%",
+          "end_date": "2026-07-31"
+        }
+      ],
+      "provenance": "synthetic_constructed",
+      "gold_status": "ai_expert_reviewed_not_human_signed",
+      "evidence": {
+        "location": "财政表中一般公共预算收入行，累计值与累计同比列",
+        "period": "2026年1—7月财政数据"
+      },
+      "expected_action": "extract",
+      "gold_review": {
+        "reviewer": "Codex AI",
+        "date": "2026-11-06",
+        "decision": "accepted",
+        "basis": "逐一核对实际源表/正文的收入行、累计/同比列、源单位及标题统计期间；支出未公布不进入Gold。单位允许等价换算。"
+      }
+    },
+    "actual_source_context": "<h1>2026年1—7月财政数据</h1><table><tr><th>指标</th><th>单位</th><th>累计值</th><th>累计同比（%）</th></tr><tr><td>一般公共预算收入</td><td>亿元</td><td>42.82</td><td>0</td></tr></table><p>2025年同期数据仅供比较，不属于本次统计期间。</p><p>一般公共预算支出：未公布；不得补零。</p><p>其他业务：工业产值 99 万元，不属于本次目标。</p>"
+  },
+  {
+    "case": {
+      "id": "prompt-simple-1",
+      "strategy": "prompt",
+      "complexity": "simple",
+      "split": "development",
+      "path_group": "prompt-simple",
+      "source": "cases\\prompt-simple-1\\source.md",
+      "source_sha256": "6a5c46e75c641131586202800aa78b909ceacdb1c22eb1e2406401a8c8e5e72c",
+      "title": "2026年1—6月财政数据",
+      "publictime": "2026-07-15",
+      "rules": [
+        {
+          "rule_indicator_code": "EVAL001",
+          "rule_indicator_name": "一般公共预算收入累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL002",
+          "rule_indicator_name": "一般公共预算收入累计同比",
+          "rule_constant_name": "%",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL003",
+          "rule_indicator_name": "一般公共预算支出累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        }
+      ],
+      "gold": [
+        {
+          "indicator_code": "EVAL001",
+          "indicator_name": "一般公共预算收入累计值",
+          "indicator_data": "41.82",
+          "indicator_unit": "亿元",
+          "end_date": "2026-06-30"
+        },
+        {
+          "indicator_code": "EVAL002",
+          "indicator_name": "一般公共预算收入累计同比",
+          "indicator_data": "-1",
+          "indicator_unit": "%",
+          "end_date": "2026-06-30"
+        }
+      ],
+      "provenance": "synthetic_constructed",
+      "gold_status": "ai_expert_reviewed_not_human_signed",
+      "evidence": {
+        "location": "财政表中一般公共预算收入行，累计值与累计同比列",
+        "period": "2026年1—6月财政数据"
+      },
+      "expected_action": "extract",
+      "gold_review": {
+        "reviewer": "Codex AI",
+        "date": "2026-11-06",
+        "decision": "accepted",
+        "basis": "逐一核对实际源表/正文的收入行、累计/同比列、源单位及标题统计期间；支出未公布不进入Gold。单位允许等价换算。"
+      }
+    },
+    "actual_source_context": "2026年1—6月财政数据\n指标 | 单位 | 累计值 | 累计同比（%）\n一般公共预算收入 | 亿元 | 41.82 | -1"
+  },
+  {
+    "case": {
+      "id": "prompt-simple-2",
+      "strategy": "prompt",
+      "complexity": "simple",
+      "split": "development",
+      "path_group": "prompt-simple",
+      "source": "cases\\prompt-simple-2\\source.md",
+      "source_sha256": "d87ef7a8b21e4366af06bb91e477451000efc91577635b43aa5ade0e6679de4a",
+      "title": "2026年1—7月财政数据",
+      "publictime": "2026-08-15",
+      "rules": [
+        {
+          "rule_indicator_code": "EVAL001",
+          "rule_indicator_name": "一般公共预算收入累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL002",
+          "rule_indicator_name": "一般公共预算收入累计同比",
+          "rule_constant_name": "%",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL003",
+          "rule_indicator_name": "一般公共预算支出累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        }
+      ],
+      "gold": [
+        {
+          "indicator_code": "EVAL001",
+          "indicator_name": "一般公共预算收入累计值",
+          "indicator_data": "42.82",
+          "indicator_unit": "亿元",
+          "end_date": "2026-07-31"
+        },
+        {
+          "indicator_code": "EVAL002",
+          "indicator_name": "一般公共预算收入累计同比",
+          "indicator_data": "0",
+          "indicator_unit": "%",
+          "end_date": "2026-07-31"
+        }
+      ],
+      "provenance": "synthetic_constructed",
+      "gold_status": "ai_expert_reviewed_not_human_signed",
+      "evidence": {
+        "location": "财政表中一般公共预算收入行，累计值与累计同比列",
+        "period": "2026年1—7月财政数据"
+      },
+      "expected_action": "extract",
+      "gold_review": {
+        "reviewer": "Codex AI",
+        "date": "2026-11-06",
+        "decision": "accepted",
+        "basis": "逐一核对实际源表/正文的收入行、累计/同比列、源单位及标题统计期间；支出未公布不进入Gold。单位允许等价换算。"
+      }
+    },
+    "actual_source_context": "2026年1—7月财政数据\n指标 | 单位 | 累计值 | 累计同比（%）\n一般公共预算收入 | 亿元 | 42.82 | 0"
+  },
+  {
+    "case": {
+      "id": "prompt-medium-1",
+      "strategy": "prompt",
+      "complexity": "medium",
+      "split": "development",
+      "path_group": "prompt-medium",
+      "source": "cases\\prompt-medium-1\\source.md",
+      "source_sha256": "148fc11b3a8b7764583b6d2d27fed387a5281e054d103747cd1117ec505c199b",
+      "title": "2026年1—6月财政数据",
+      "publictime": "2026-07-15",
+      "rules": [
+        {
+          "rule_indicator_code": "EVAL001",
+          "rule_indicator_name": "一般公共预算收入累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL002",
+          "rule_indicator_name": "一般公共预算收入累计同比",
+          "rule_constant_name": "%",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL003",
+          "rule_indicator_name": "一般公共预算支出累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        }
+      ],
+      "gold": [
+        {
+          "indicator_code": "EVAL001",
+          "indicator_name": "一般公共预算收入累计值",
+          "indicator_data": "41.82",
+          "indicator_unit": "亿元",
+          "end_date": "2026-06-30"
+        },
+        {
+          "indicator_code": "EVAL002",
+          "indicator_name": "一般公共预算收入累计同比",
+          "indicator_data": "-1",
+          "indicator_unit": "%",
+          "end_date": "2026-06-30"
+        }
+      ],
+      "provenance": "synthetic_constructed",
+      "gold_status": "ai_expert_reviewed_not_human_signed",
+      "evidence": {
+        "location": "财政表中一般公共预算收入行，累计值与累计同比列",
+        "period": "2026年1—6月财政数据"
+      },
+      "expected_action": "extract",
+      "gold_review": {
+        "reviewer": "Codex AI",
+        "date": "2026-11-06",
+        "decision": "accepted",
+        "basis": "逐一核对实际源表/正文的收入行、累计/同比列、源单位及标题统计期间；支出未公布不进入Gold。单位允许等价换算。"
+      }
+    },
+    "actual_source_context": "2026年1—6月财政数据\n财政收支 / 财政收入；数值为累计口径，增速为累计同比。\n指标 | 单位 | 累计值 | 累计同比（%）\n一般公共预算收入 | 亿元 | 41.82 | -1"
+  },
+  {
+    "case": {
+      "id": "prompt-medium-2",
+      "strategy": "prompt",
+      "complexity": "medium",
+      "split": "development",
+      "path_group": "prompt-medium",
+      "source": "cases\\prompt-medium-2\\source.md",
+      "source_sha256": "9e31031a96590b88574b93e4354420261b74917eeadcc6ced191c0113b06b700",
+      "title": "2026年1—7月财政数据",
+      "publictime": "2026-08-15",
+      "rules": [
+        {
+          "rule_indicator_code": "EVAL001",
+          "rule_indicator_name": "一般公共预算收入累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL002",
+          "rule_indicator_name": "一般公共预算收入累计同比",
+          "rule_constant_name": "%",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL003",
+          "rule_indicator_name": "一般公共预算支出累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        }
+      ],
+      "gold": [
+        {
+          "indicator_code": "EVAL001",
+          "indicator_name": "一般公共预算收入累计值",
+          "indicator_data": "42.82",
+          "indicator_unit": "亿元",
+          "end_date": "2026-07-31"
+        },
+        {
+          "indicator_code": "EVAL002",
+          "indicator_name": "一般公共预算收入累计同比",
+          "indicator_data": "0",
+          "indicator_unit": "%",
+          "end_date": "2026-07-31"
+        }
+      ],
+      "provenance": "synthetic_constructed",
+      "gold_status": "ai_expert_reviewed_not_human_signed",
+      "evidence": {
+        "location": "财政表中一般公共预算收入行，累计值与累计同比列",
+        "period": "2026年1—7月财政数据"
+      },
+      "expected_action": "extract",
+      "gold_review": {
+        "reviewer": "Codex AI",
+        "date": "2026-11-06",
+        "decision": "accepted",
+        "basis": "逐一核对实际源表/正文的收入行、累计/同比列、源单位及标题统计期间；支出未公布不进入Gold。单位允许等价换算。"
+      }
+    },
+    "actual_source_context": "2026年1—7月财政数据\n财政收支 / 财政收入；数值为累计口径，增速为累计同比。\n指标 | 单位 | 累计值 | 累计同比（%）\n一般公共预算收入 | 亿元 | 42.82 | 0"
+  },
+  {
+    "case": {
+      "id": "prompt-complex-1",
+      "strategy": "prompt",
+      "complexity": "complex",
+      "split": "holdout",
+      "path_group": "prompt-complex",
+      "source": "cases\\prompt-complex-1\\source.md",
+      "source_sha256": "ca34e039a53cf2391494466865a113452f535b6e5802e320ecd6c65e21e8104b",
+      "title": "2026年1—6月财政数据",
+      "publictime": "2026-07-15",
+      "rules": [
+        {
+          "rule_indicator_code": "EVAL001",
+          "rule_indicator_name": "一般公共预算收入累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL002",
+          "rule_indicator_name": "一般公共预算收入累计同比",
+          "rule_constant_name": "%",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL003",
+          "rule_indicator_name": "一般公共预算支出累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        }
+      ],
+      "gold": [
+        {
+          "indicator_code": "EVAL001",
+          "indicator_name": "一般公共预算收入累计值",
+          "indicator_data": "41.82",
+          "indicator_unit": "亿元",
+          "end_date": "2026-06-30"
+        },
+        {
+          "indicator_code": "EVAL002",
+          "indicator_name": "一般公共预算收入累计同比",
+          "indicator_data": "-1",
+          "indicator_unit": "%",
+          "end_date": "2026-06-30"
+        }
+      ],
+      "provenance": "synthetic_constructed",
+      "gold_status": "ai_expert_reviewed_not_human_signed",
+      "evidence": {
+        "location": "财政表中一般公共预算收入行，累计值与累计同比列",
+        "period": "2026年1—6月财政数据"
+      },
+      "expected_action": "extract",
+      "gold_review": {
+        "reviewer": "Codex AI",
+        "date": "2026-11-06",
+        "decision": "accepted",
+        "basis": "逐一核对实际源表/正文的收入行、累计/同比列、源单位及标题统计期间；支出未公布不进入Gold。单位允许等价换算。"
+      }
+    },
+    "actual_source_context": "2026年1—6月财政数据\n指标 | 单位 | 累计值 | 累计同比（%）\n一般公共预算收入 | 亿元 | 41.82 | -1\n2025年同期数据仅供比较，不属于本次统计期间。\n一般公共预算支出：未公布；不得补零。\n其他业务：工业产值 99 万元，不属于本次目标。"
+  },
+  {
+    "case": {
+      "id": "prompt-complex-2",
+      "strategy": "prompt",
+      "complexity": "complex",
+      "split": "holdout",
+      "path_group": "prompt-complex",
+      "source": "cases\\prompt-complex-2\\source.md",
+      "source_sha256": "d6f26e2c5ce16bbbc6bcbd19da8e8d342ef642f938e1cd7305cd8ebbd2ec9ab5",
+      "title": "2026年1—7月财政数据",
+      "publictime": "2026-08-15",
+      "rules": [
+        {
+          "rule_indicator_code": "EVAL001",
+          "rule_indicator_name": "一般公共预算收入累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL002",
+          "rule_indicator_name": "一般公共预算收入累计同比",
+          "rule_constant_name": "%",
+          "indicator_release_frequency": "月"
+        },
+        {
+          "rule_indicator_code": "EVAL003",
+          "rule_indicator_name": "一般公共预算支出累计值",
+          "rule_constant_name": "万元",
+          "indicator_release_frequency": "月"
+        }
+      ],
+      "gold": [
+        {
+          "indicator_code": "EVAL001",
+          "indicator_name": "一般公共预算收入累计值",
+          "indicator_data": "42.82",
+          "indicator_unit": "亿元",
+          "end_date": "2026-07-31"
+        },
+        {
+          "indicator_code": "EVAL002",
+          "indicator_name": "一般公共预算收入累计同比",
+          "indicator_data": "0",
+          "indicator_unit": "%",
+          "end_date": "2026-07-31"
+        }
+      ],
+      "provenance": "synthetic_constructed",
+      "gold_status": "ai_expert_reviewed_not_human_signed",
+      "evidence": {
+        "location": "财政表中一般公共预算收入行，累计值与累计同比列",
+        "period": "2026年1—7月财政数据"
+      },
+      "expected_action": "extract",
+      "gold_review": {
+        "reviewer": "Codex AI",
+        "date": "2026-11-06",
+        "decision": "accepted",
+        "basis": "逐一核对实际源表/正文的收入行、累计/同比列、源单位及标题统计期间；支出未公布不进入Gold。单位允许等价换算。"
+      }
+    },
+    "actual_source_context": "2026年1—7月财政数据\n指标 | 单位 | 累计值 | 累计同比（%）\n一般公共预算收入 | 亿元 | 42.82 | 0\n2025年同期数据仅供比较，不属于本次统计期间。\n一般公共预算支出：未公布；不得补零。\n其他业务：工业产值 99 万元，不属于本次目标。"
+  }
+]

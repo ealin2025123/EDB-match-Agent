@@ -1,0 +1,138 @@
+{
+  "business_cases": 18,
+  "negative_tests": {
+    "passed": 6,
+    "total": 6,
+    "results": [
+      {
+        "case_id": "negative-empty_gzk",
+        "expected_error": "GZKJG_EMPTY",
+        "scope": "isolated_gate_test",
+        "fault_injection": false,
+        "observed_error": "GZKJG_EMPTY",
+        "passed": true
+      },
+      {
+        "case_id": "negative-invalid_source",
+        "expected_error": "INVALID_SOURCE",
+        "scope": "isolated_gate_test",
+        "fault_injection": false,
+        "observed_error": "INVALID_SOURCE",
+        "exception_type": "BadZipFile",
+        "passed": true
+      },
+      {
+        "case_id": "negative-no_data",
+        "expected_error": "SOURCE_NO_VALID_DATA",
+        "scope": "isolated_gate_test",
+        "fault_injection": false,
+        "observed_error": "SOURCE_NO_VALID_DATA",
+        "message": "源文仅包含栏目导航文字（首页、联系我们、信息公开），无任何统计指标数值，属于只有导航/标题内容。",
+        "passed": true
+      },
+      {
+        "case_id": "negative-unrelated",
+        "expected_error": "SOURCE_GZK_NO_RELEVANT_DATA",
+        "scope": "isolated_gate_test",
+        "fault_injection": false,
+        "observed_error": "SOURCE_GZK_NO_RELEVANT_DATA",
+        "message": "源文有有效统计数据（2026年6月工业总产值99万元），但仅公布工业总产值，与GZK指标“一般公共预算收入累计值”不属同一口径指标。",
+        "passed": true
+      },
+      {
+        "case_id": "negative-empty_extraction",
+        "expected_error": "EMPTY_EXTRACTION",
+        "scope": "isolated_gate_test",
+        "fault_injection": true,
+        "observed_error": "EMPTY_EXTRACTION",
+        "message": "源文件预审未判定无业务数据，但解析结果ExcelData为空。请依据真实源文件和本轮错误核对读取范围、工作表、表头和数值定位，重新生成完整代码。",
+        "passed": true
+      },
+      {
+        "case_id": "negative-missing_period",
+        "expected_error": "END_DATE_EMPTY",
+        "scope": "isolated_gate_test",
+        "fault_injection": true,
+        "observed_error": "END_DATE_EMPTY",
+        "message": "1条解析记录的end_date为空或empty（记录序号：[1]）。逐条按指标自身/表头统计期间、实际源标题及真实文件名、本次title的顺序查找统计期间；仅高优先级证据缺失时使用下一项，冲突保留更具体证据。禁止用publictime或发布日期代替。根据真实证据重新生成完整代码，保留全部有效源数值；无法确定时明确说明，不能编造或删除缺日期记录。",
+        "passed": true
+      }
+    ],
+    "dc_tested": false
+  },
+  "unit_tests": [
+    {
+      "case_id": "unit-equivalent",
+      "test_passed": true,
+      "candidate_accepted": true,
+      "evidence_type": "deterministic_not_model"
+    },
+    {
+      "case_id": "unit-wrong-ratio",
+      "test_passed": true,
+      "candidate_accepted": false,
+      "evidence_type": "deterministic_not_model"
+    }
+  ],
+  "dc_tested": false,
+  "stages": {
+    "A_generation": {
+      "correctly_delivered_tasks": 5,
+      "total_tasks": 18,
+      "statuses": {
+        "failed": 12,
+        "ready": 6
+      },
+      "correct_records": 10,
+      "target_records": 36,
+      "tokens": 314318,
+      "model_calls": 24,
+      "rebuilds": 0,
+      "usage_missing": 0
+    },
+    "B_matching_review": {
+      "correctly_delivered_tasks": 5,
+      "total_tasks": 18,
+      "statuses": {
+        "skipped_dependency": 12,
+        "ready": 5,
+        "failed": 1
+      },
+      "correct_records": 10,
+      "target_records": 36,
+      "tokens": 106605,
+      "model_calls": 12,
+      "rebuilds": 3,
+      "usage_missing": 0
+    },
+    "C_preflight": {
+      "correctly_delivered_tasks": 6,
+      "total_tasks": 18,
+      "statuses": {
+        "skipped_dependency": 12,
+        "ready": 6
+      },
+      "correct_records": 12,
+      "target_records": 36,
+      "tokens": 59934,
+      "model_calls": 25,
+      "rebuilds": 1,
+      "usage_missing": 0
+    },
+    "D_reuse": {
+      "correctly_delivered_tasks": 4,
+      "total_tasks": 18,
+      "statuses": {
+        "skipped_dependency": 12,
+        "ready": 4,
+        "failed": 2
+      },
+      "correct_records": 8,
+      "target_records": 36,
+      "tokens": 4053,
+      "model_calls": 1,
+      "rebuilds": 0,
+      "usage_missing": 0
+    }
+  }
+}

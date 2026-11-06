@@ -1,0 +1,545 @@
+[
+  {
+    "case_id": "excel-simple-1",
+    "stage": "B_matching_review",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 0,
+    "status": "skipped_dependency",
+    "error_type": "ValueError",
+    "message": "No initial result",
+    "score": null,
+    "elapsed_seconds": 0.0,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "model_calls": 0,
+      "usage_missing": 0,
+      "request_records": 0,
+      "usage_complete": false
+    },
+    "shared_initial_generation_cost": "[LOCAL_PATH]"
+  },
+  {
+    "case_id": "excel-simple-2",
+    "stage": "B_matching_review",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 1,
+    "status": "ready",
+    "rows": [
+      {
+        "indicator_name": "一般公共预算收入累计值",
+        "indicator_data": "428200",
+        "indicator_unit": "万元",
+        "end_date": "2026-07-31"
+      },
+      {
+        "indicator_name": "一般公共预算收入累计同比",
+        "indicator_data": "0",
+        "indicator_unit": "%",
+        "end_date": "2026-07-31"
+      }
+    ],
+    "score": {
+      "correct": 2,
+      "predicted": 2,
+      "expected": 2,
+      "precision": 1.0,
+      "coverage": 1.0,
+      "wrong_records": [],
+      "missing_records": [],
+      "gold_pass": true
+    },
+    "elapsed_seconds": 5.443,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 3423,
+      "completion_tokens": 696,
+      "total_tokens": 4119,
+      "model_calls": 1,
+      "usage_missing": 0,
+      "request_records": 1,
+      "usage_complete": true
+    },
+    "shared_initial_generation_cost": "[LOCAL_PATH]"
+  },
+  {
+    "case_id": "excel-medium-1",
+    "stage": "B_matching_review",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 2,
+    "status": "ready",
+    "rows": [
+      {
+        "indicator_name": "一般公共预算收入累计值",
+        "indicator_data": "418200",
+        "indicator_unit": "万元",
+        "end_date": "2026-06-30"
+      },
+      {
+        "indicator_name": "一般公共预算收入累计同比",
+        "indicator_data": "-1",
+        "indicator_unit": "%",
+        "end_date": "2026-06-30"
+      }
+    ],
+    "score": {
+      "correct": 2,
+      "predicted": 2,
+      "expected": 2,
+      "precision": 1.0,
+      "coverage": 1.0,
+      "wrong_records": [],
+      "missing_records": [],
+      "gold_pass": true
+    },
+    "elapsed_seconds": 131.384,
+    "rebuilds": 1,
+    "usage": {
+      "prompt_tokens": 6916,
+      "completion_tokens": 20293,
+      "total_tokens": 27209,
+      "model_calls": 2,
+      "usage_missing": 0,
+      "request_records": 2,
+      "usage_complete": true
+    },
+    "shared_initial_generation_cost": "[LOCAL_PATH]"
+  },
+  {
+    "case_id": "excel-medium-2",
+    "stage": "B_matching_review",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 1,
+    "status": "ready",
+    "rows": [
+      {
+        "indicator_name": "一般公共预算收入累计值",
+        "indicator_data": "428200",
+        "indicator_unit": "万元",
+        "end_date": "2026-07-31"
+      },
+      {
+        "indicator_name": "一般公共预算收入累计同比",
+        "indicator_data": "0",
+        "indicator_unit": "%",
+        "end_date": "2026-07-31"
+      }
+    ],
+    "score": {
+      "correct": 2,
+      "predicted": 2,
+      "expected": 2,
+      "precision": 1.0,
+      "coverage": 1.0,
+      "wrong_records": [],
+      "missing_records": [],
+      "gold_pass": true
+    },
+    "elapsed_seconds": 4.808,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 3433,
+      "completion_tokens": 606,
+      "total_tokens": 4039,
+      "model_calls": 1,
+      "usage_missing": 0,
+      "request_records": 1,
+      "usage_complete": true
+    },
+    "shared_initial_generation_cost": "[LOCAL_PATH]"
+  },
+  {
+    "case_id": "excel-complex-1",
+    "stage": "B_matching_review",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 0,
+    "status": "skipped_dependency",
+    "error_type": "ValueError",
+    "message": "No initial result",
+    "score": null,
+    "elapsed_seconds": 0.0,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "model_calls": 0,
+      "usage_missing": 0,
+      "request_records": 0,
+      "usage_complete": false
+    },
+    "shared_initial_generation_cost": "[LOCAL_PATH]"
+  },
+  {
+    "case_id": "excel-complex-2",
+    "stage": "B_matching_review",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 3,
+    "status": "ready",
+    "rows": [
+      {
+        "indicator_name": "一般公共预算收入累计值",
+        "indicator_data": "428200",
+        "indicator_unit": "万元",
+        "end_date": "2026-07-31"
+      },
+      {
+        "indicator_name": "一般公共预算收入累计同比",
+        "indicator_data": "0",
+        "indicator_unit": "%",
+        "end_date": "2026-07-31"
+      }
+    ],
+    "score": {
+      "correct": 2,
+      "predicted": 2,
+      "expected": 2,
+      "precision": 1.0,
+      "coverage": 1.0,
+      "wrong_records": [],
+      "missing_records": [],
+      "gold_pass": true
+    },
+    "elapsed_seconds": 229.935,
+    "rebuilds": 2,
+    "usage": {
+      "prompt_tokens": 14162,
+      "completion_tokens": 36346,
+      "total_tokens": 50508,
+      "model_calls": 4,
+      "usage_missing": 0,
+      "request_records": 4,
+      "usage_complete": true
+    },
+    "shared_initial_generation_cost": "[LOCAL_PATH]"
+  },
+  {
+    "case_id": "html-simple-1",
+    "stage": "B_matching_review",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 0,
+    "status": "skipped_dependency",
+    "error_type": "ValueError",
+    "message": "No initial result",
+    "score": null,
+    "elapsed_seconds": 0.0,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "model_calls": 0,
+      "usage_missing": 0,
+      "request_records": 0,
+      "usage_complete": false
+    },
+    "shared_initial_generation_cost": "[LOCAL_PATH]"
+  },
+  {
+    "case_id": "html-simple-2",
+    "stage": "B_matching_review",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 0,
+    "status": "skipped_dependency",
+    "error_type": "ValueError",
+    "message": "No initial result",
+    "score": null,
+    "elapsed_seconds": 0.0,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "model_calls": 0,
+      "usage_missing": 0,
+      "request_records": 0,
+      "usage_complete": false
+    },
+    "shared_initial_generation_cost": "[LOCAL_PATH]"
+  },
+  {
+    "case_id": "html-medium-1",
+    "stage": "B_matching_review",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 0,
+    "status": "skipped_dependency",
+    "error_type": "ValueError",
+    "message": "No initial result",
+    "score": null,
+    "elapsed_seconds": 0.0,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "model_calls": 0,
+      "usage_missing": 0,
+      "request_records": 0,
+      "usage_complete": false
+    },
+    "shared_initial_generation_cost": "[LOCAL_PATH]"
+  },
+  {
+    "case_id": "html-medium-2",
+    "stage": "B_matching_review",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 0,
+    "status": "skipped_dependency",
+    "error_type": "ValueError",
+    "message": "No initial result",
+    "score": null,
+    "elapsed_seconds": 0.0,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "model_calls": 0,
+      "usage_missing": 0,
+      "request_records": 0,
+      "usage_complete": false
+    },
+    "shared_initial_generation_cost": "[LOCAL_PATH]"
+  },
+  {
+    "case_id": "html-complex-1",
+    "stage": "B_matching_review",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 1,
+    "status": "ready",
+    "rows": [
+      {
+        "indicator_name": "一般公共预算收入累计值",
+        "indicator_data": "41.82",
+        "indicator_unit": "亿元",
+        "end_date": "2026-06-30"
+      },
+      {
+        "indicator_name": "一般公共预算收入累计同比",
+        "indicator_data": "-1",
+        "indicator_unit": "%",
+        "end_date": "2026-06-30"
+      }
+    ],
+    "score": {
+      "correct": 2,
+      "predicted": 2,
+      "expected": 2,
+      "precision": 1.0,
+      "coverage": 1.0,
+      "wrong_records": [],
+      "missing_records": [],
+      "gold_pass": true
+    },
+    "elapsed_seconds": 5.742,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 4653,
+      "completion_tokens": 715,
+      "total_tokens": 5368,
+      "model_calls": 1,
+      "usage_missing": 0,
+      "request_records": 1,
+      "usage_complete": true
+    },
+    "shared_initial_generation_cost": "[LOCAL_PATH]"
+  },
+  {
+    "case_id": "html-complex-2",
+    "stage": "B_matching_review",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 0,
+    "status": "skipped_dependency",
+    "error_type": "ValueError",
+    "message": "No initial result",
+    "score": null,
+    "elapsed_seconds": 0.0,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "model_calls": 0,
+      "usage_missing": 0,
+      "request_records": 0,
+      "usage_complete": false
+    },
+    "shared_initial_generation_cost": "[LOCAL_PATH]"
+  },
+  {
+    "case_id": "prompt-simple-1",
+    "stage": "B_matching_review",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 0,
+    "status": "skipped_dependency",
+    "error_type": "ValueError",
+    "message": "No initial result",
+    "score": null,
+    "elapsed_seconds": 0.0,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "model_calls": 0,
+      "usage_missing": 0,
+      "request_records": 0,
+      "usage_complete": false
+    },
+    "shared_initial_generation_cost": "[LOCAL_PATH]"
+  },
+  {
+    "case_id": "prompt-simple-2",
+    "stage": "B_matching_review",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 0,
+    "status": "skipped_dependency",
+    "error_type": "ValueError",
+    "message": "No initial result",
+    "score": null,
+    "elapsed_seconds": 0.0,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "model_calls": 0,
+      "usage_missing": 0,
+      "request_records": 0,
+      "usage_complete": false
+    },
+    "shared_initial_generation_cost": "[LOCAL_PATH]"
+  },
+  {
+    "case_id": "prompt-medium-1",
+    "stage": "B_matching_review",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 1,
+    "status": "failed",
+    "error_type": "KeyError",
+    "message": "'ExcelData'",
+    "score": {
+      "correct": 0,
+      "predicted": 0,
+      "expected": 2,
+      "precision": null,
+      "coverage": 0.0,
+      "wrong_records": [],
+      "missing_records": [
+        {
+          "indicator_code": "EVAL001",
+          "indicator_name": "一般公共预算收入累计值",
+          "indicator_data": "41.82",
+          "indicator_unit": "亿元",
+          "end_date": "2026-06-30"
+        },
+        {
+          "indicator_code": "EVAL002",
+          "indicator_name": "一般公共预算收入累计同比",
+          "indicator_data": "-1",
+          "indicator_unit": "%",
+          "end_date": "2026-06-30"
+        }
+      ],
+      "gold_pass": false
+    },
+    "elapsed_seconds": 71.484,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 5107,
+      "completion_tokens": 10255,
+      "total_tokens": 15362,
+      "model_calls": 3,
+      "usage_missing": 0,
+      "request_records": 3,
+      "usage_complete": true
+    },
+    "shared_initial_generation_cost": "[LOCAL_PATH]"
+  },
+  {
+    "case_id": "prompt-medium-2",
+    "stage": "B_matching_review",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 0,
+    "status": "skipped_dependency",
+    "error_type": "ValueError",
+    "message": "No initial result",
+    "score": null,
+    "elapsed_seconds": 0.0,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "model_calls": 0,
+      "usage_missing": 0,
+      "request_records": 0,
+      "usage_complete": false
+    },
+    "shared_initial_generation_cost": "[LOCAL_PATH]"
+  },
+  {
+    "case_id": "prompt-complex-1",
+    "stage": "B_matching_review",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 0,
+    "status": "skipped_dependency",
+    "error_type": "ValueError",
+    "message": "No initial result",
+    "score": null,
+    "elapsed_seconds": 0.0,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "model_calls": 0,
+      "usage_missing": 0,
+      "request_records": 0,
+      "usage_complete": false
+    },
+    "shared_initial_generation_cost": "[LOCAL_PATH]"
+  },
+  {
+    "case_id": "prompt-complex-2",
+    "stage": "B_matching_review",
+    "evidence_type": "live_model",
+    "scope": "isolated_evaluation_not_production_dc",
+    "attempts": 0,
+    "status": "skipped_dependency",
+    "error_type": "ValueError",
+    "message": "No initial result",
+    "score": null,
+    "elapsed_seconds": 0.0,
+    "rebuilds": 0,
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "model_calls": 0,
+      "usage_missing": 0,
+      "request_records": 0,
+      "usage_complete": false
+    },
+    "shared_initial_generation_cost": "[LOCAL_PATH]"
+  }
+]

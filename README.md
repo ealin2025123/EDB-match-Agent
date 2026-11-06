@@ -145,3 +145,8 @@ python -X utf8 scripts/check_release.py
 仓库不包含密钥、企业规则表、真实业务源文件、已生成的来源专用资产、运行日志和本机历史任务。尚未指定开源许可证，仓库可见性保持不变。
 
 [测试指南](docs/testing-guide.md) · [更新记录](CHANGELOG.md) · [贡献说明](CONTRIBUTING.md) · [安全与隐私](SECURITY.md)
+
+
+## 小样本评测记录
+
+新增 [26 场景评测方法与过程](docs/evaluation/README.md)、[实际报告](docs/evaluation/report-26.md)与可复现的离线评分脚本。包含 18 个合成业务样本、6 个异常场景和2个单位换算边界；业务样本实际调用模型，DC 实测已取消。保留失败和依赖跳过，结果不代表生产准确率或跨期缓存收益。
