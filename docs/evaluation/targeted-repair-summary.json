@@ -1,0 +1,364 @@
+{
+  "targeted_cases": 8,
+  "completed_cases": 8,
+  "gold_pass": 7,
+  "tokens": 107790,
+  "model_calls": 7,
+  "results": [
+    {
+      "case_id": "excel-simple-1",
+      "status": "executed",
+      "rebuilds": 1,
+      "prior_status": "failed",
+      "prior_gold_pass": false,
+      "rows": [
+        {
+          "indicator_name": "一般公共预算收入累计值",
+          "indicator_data": "418200",
+          "indicator_unit": "万元",
+          "end_date": "2026-06-30"
+        },
+        {
+          "indicator_name": "一般公共预算收入累计同比",
+          "indicator_data": "-1",
+          "indicator_unit": "%",
+          "end_date": "2026-06-30"
+        }
+      ],
+      "score": {
+        "correct": 2,
+        "predicted": 2,
+        "expected": 2,
+        "precision": 1.0,
+        "coverage": 1.0,
+        "wrong_records": [],
+        "missing_records": [],
+        "gold_pass": true
+      },
+      "mode": "live_model_repair",
+      "usage": {
+        "prompt_tokens": 2824,
+        "completion_tokens": 9384,
+        "total_tokens": 12208,
+        "model_calls": 1,
+        "usage_missing": 0,
+        "request_records": 1,
+        "usage_complete": true
+      }
+    },
+    {
+      "case_id": "excel-medium-1",
+      "status": "executed",
+      "rebuilds": 0,
+      "prior_status": "executed",
+      "prior_gold_pass": false,
+      "rows": [
+        {
+          "indicator_name": "一般公共预算收入累计值",
+          "indicator_data": "418200",
+          "indicator_unit": "万元",
+          "end_date": "2026-06-30"
+        },
+        {
+          "indicator_name": "一般公共预算收入累计同比",
+          "indicator_data": "-1",
+          "indicator_unit": "%",
+          "end_date": "2026-06-30"
+        }
+      ],
+      "score": {
+        "correct": 2,
+        "predicted": 2,
+        "expected": 2,
+        "precision": 1.0,
+        "coverage": 1.0,
+        "wrong_records": [],
+        "missing_records": [],
+        "gold_pass": true
+      },
+      "mode": "saved_reviewed_asset_replay",
+      "asset_origin": "[LOCAL_PATH]",
+      "usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0,
+        "model_calls": 0,
+        "usage_missing": 0,
+        "request_records": 0,
+        "usage_complete": false
+      }
+    },
+    {
+      "case_id": "excel-complex-1",
+      "status": "executed",
+      "rebuilds": 1,
+      "prior_status": "failed",
+      "prior_gold_pass": false,
+      "rows": [
+        {
+          "indicator_name": "一般公共预算收入累计值",
+          "indicator_data": "418200",
+          "indicator_unit": "万元",
+          "end_date": "2026-06-30"
+        },
+        {
+          "indicator_name": "一般公共预算收入累计同比",
+          "indicator_data": "-1",
+          "indicator_unit": "%",
+          "end_date": "2026-06-30"
+        },
+        {
+          "indicator_name": "一般公共预算收入累计值",
+          "indicator_data": "990000",
+          "indicator_unit": "万元",
+          "end_date": "2025-06-30"
+        },
+        {
+          "indicator_name": "一般公共预算收入累计同比",
+          "indicator_data": "9",
+          "indicator_unit": "%",
+          "end_date": "2025-06-30"
+        }
+      ],
+      "score": {
+        "correct": 2,
+        "predicted": 4,
+        "expected": 2,
+        "precision": 0.5,
+        "coverage": 1.0,
+        "wrong_records": [
+          {
+            "indicator_name": "一般公共预算收入累计值",
+            "indicator_data": "990000",
+            "indicator_unit": "万元",
+            "end_date": "2025-06-30"
+          },
+          {
+            "indicator_name": "一般公共预算收入累计同比",
+            "indicator_data": "9",
+            "indicator_unit": "%",
+            "end_date": "2025-06-30"
+          }
+        ],
+        "missing_records": [],
+        "gold_pass": false
+      },
+      "mode": "live_model_repair",
+      "usage": {
+        "prompt_tokens": 3487,
+        "completion_tokens": 14187,
+        "total_tokens": 17674,
+        "model_calls": 1,
+        "usage_missing": 0,
+        "request_records": 1,
+        "usage_complete": true
+      }
+    },
+    {
+      "case_id": "html-simple-1",
+      "status": "executed",
+      "rebuilds": 1,
+      "prior_status": "failed",
+      "prior_gold_pass": false,
+      "rows": [
+        {
+          "indicator_name": "一般公共预算收入累计值",
+          "indicator_data": "41.82",
+          "indicator_unit": "亿元",
+          "end_date": "2026-06-30"
+        },
+        {
+          "indicator_name": "一般公共预算收入累计同比",
+          "indicator_data": "-1",
+          "indicator_unit": "%",
+          "end_date": "2026-06-30"
+        }
+      ],
+      "score": {
+        "correct": 2,
+        "predicted": 2,
+        "expected": 2,
+        "precision": 1.0,
+        "coverage": 1.0,
+        "wrong_records": [],
+        "missing_records": [],
+        "gold_pass": true
+      },
+      "mode": "live_model_repair",
+      "usage": {
+        "prompt_tokens": 3443,
+        "completion_tokens": 9511,
+        "total_tokens": 12954,
+        "model_calls": 1,
+        "usage_missing": 0,
+        "request_records": 1,
+        "usage_complete": true
+      }
+    },
+    {
+      "case_id": "html-simple-2",
+      "status": "executed",
+      "rebuilds": 1,
+      "prior_status": "failed",
+      "prior_gold_pass": false,
+      "rows": [
+        {
+          "indicator_name": "一般公共预算收入累计值",
+          "indicator_data": "428200",
+          "indicator_unit": "万元",
+          "end_date": "2026-07-31"
+        },
+        {
+          "indicator_name": "一般公共预算收入累计同比",
+          "indicator_data": "0",
+          "indicator_unit": "%",
+          "end_date": "2026-07-31"
+        }
+      ],
+      "score": {
+        "correct": 2,
+        "predicted": 2,
+        "expected": 2,
+        "precision": 1.0,
+        "coverage": 1.0,
+        "wrong_records": [],
+        "missing_records": [],
+        "gold_pass": true
+      },
+      "mode": "live_model_repair",
+      "usage": {
+        "prompt_tokens": 2739,
+        "completion_tokens": 18493,
+        "total_tokens": 21232,
+        "model_calls": 1,
+        "usage_missing": 0,
+        "request_records": 1,
+        "usage_complete": true
+      }
+    },
+    {
+      "case_id": "html-medium-1",
+      "status": "executed",
+      "rebuilds": 1,
+      "prior_status": "failed",
+      "prior_gold_pass": false,
+      "rows": [
+        {
+          "indicator_name": "一般公共预算收入累计值",
+          "indicator_data": "41.82",
+          "indicator_unit": "亿元",
+          "end_date": "2026-06-30"
+        },
+        {
+          "indicator_name": "一般公共预算收入累计同比",
+          "indicator_data": "-1",
+          "indicator_unit": "%",
+          "end_date": "2026-06-30"
+        }
+      ],
+      "score": {
+        "correct": 2,
+        "predicted": 2,
+        "expected": 2,
+        "precision": 1.0,
+        "coverage": 1.0,
+        "wrong_records": [],
+        "missing_records": [],
+        "gold_pass": true
+      },
+      "mode": "live_model_repair",
+      "usage": {
+        "prompt_tokens": 2693,
+        "completion_tokens": 4021,
+        "total_tokens": 6714,
+        "model_calls": 1,
+        "usage_missing": 0,
+        "request_records": 1,
+        "usage_complete": true
+      }
+    },
+    {
+      "case_id": "html-medium-2",
+      "status": "executed",
+      "rebuilds": 1,
+      "prior_status": "failed",
+      "prior_gold_pass": false,
+      "rows": [
+        {
+          "indicator_name": "一般公共预算收入累计值",
+          "indicator_data": "428200",
+          "indicator_unit": "万元",
+          "end_date": "2026-07-31"
+        },
+        {
+          "indicator_name": "一般公共预算收入累计同比",
+          "indicator_data": "0",
+          "indicator_unit": "%",
+          "end_date": "2026-07-31"
+        }
+      ],
+      "score": {
+        "correct": 2,
+        "predicted": 2,
+        "expected": 2,
+        "precision": 1.0,
+        "coverage": 1.0,
+        "wrong_records": [],
+        "missing_records": [],
+        "gold_pass": true
+      },
+      "mode": "live_model_repair",
+      "usage": {
+        "prompt_tokens": 3319,
+        "completion_tokens": 17180,
+        "total_tokens": 20499,
+        "model_calls": 1,
+        "usage_missing": 0,
+        "request_records": 1,
+        "usage_complete": true
+      }
+    },
+    {
+      "case_id": "html-complex-2",
+      "status": "executed",
+      "rebuilds": 1,
+      "prior_status": "failed",
+      "prior_gold_pass": false,
+      "rows": [
+        {
+          "indicator_name": "一般公共预算收入累计值",
+          "indicator_data": "428200",
+          "indicator_unit": "万元",
+          "end_date": "2026-07-31"
+        },
+        {
+          "indicator_name": "一般公共预算收入累计同比",
+          "indicator_data": "0",
+          "indicator_unit": "%",
+          "end_date": "2026-07-31"
+        }
+      ],
+      "score": {
+        "correct": 2,
+        "predicted": 2,
+        "expected": 2,
+        "precision": 1.0,
+        "coverage": 1.0,
+        "wrong_records": [],
+        "missing_records": [],
+        "gold_pass": true
+      },
+      "mode": "live_model_repair",
+      "usage": {
+        "prompt_tokens": 2996,
+        "completion_tokens": 13513,
+        "total_tokens": 16509,
+        "model_calls": 1,
+        "usage_missing": 0,
+        "request_records": 1,
+        "usage_complete": true
+      }
+    }
+  ],
+  "dc_tested": false
+}

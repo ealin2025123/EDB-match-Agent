@@ -149,4 +149,4 @@ python -X utf8 scripts/check_release.py
 
 ## 小样本评测记录
 
-新增 [26 场景评测方法与过程](docs/evaluation/README.md)、[最新分析报告](docs/evaluation/current-agent-analysis.md)与可复现的离线评分脚本。包含 18 个合成业务样本、6 个异常场景和2个单位换算边界；业务样本实际调用模型，DC 实测已取消。保留失败和依赖跳过，结果不代表生产准确率或跨期缓存收益。
+新增 [26 场景评测方法与过程](docs/evaluation/README.md)、[最新分析报告](docs/evaluation/targeted-repair-analysis.md)与可复现的离线评分脚本。包含 18 个合成业务样本、6 个异常场景和2个单位换算边界；业务样本实际调用模型，DC 实测已取消。保留失败和依赖跳过，结果不代表生产准确率或跨期缓存收益。
