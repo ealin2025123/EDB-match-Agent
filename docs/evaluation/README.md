@@ -1,3 +1,11 @@
+# 最新评测分析
+
+优先阅读 [以当前 Agent 为准的评测分析报告](current-agent-analysis.md)。输出包装适配已修正，Python执行限制保持当前Agent原状；回放为10/18份候选符合Gold，不能当作生产交付率。额外放宽执行限制的实验已撤回，不计入当前结论。
+
+[严格回放汇总](adapter-replay-summary.json) · [逐样本证据](adapter-replay-observations.json)
+
+---
+
 # 小样本评测过程与结果
 
 本目录记录2026年11月6日的独立评测实验，不是生产Agent消融实验，也未执行DC实测。
